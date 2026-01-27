@@ -88,6 +88,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	// Health check endpoint (no auth required, for monitoring/uptime services)
+	mux.HandleFunc("/health", healthCheckHandler)
+
 	// Define routes with HTTPS enforcement, security headers, rate limiting
 	mux.HandleFunc("/register", middleware.RequireHTTPS(middleware.SecurityHeaders(rateLimitAuth(registerHandler))))
 	mux.HandleFunc("/login", middleware.RequireHTTPS(middleware.SecurityHeaders(rateLimitAuth(loginHandler))))
@@ -210,6 +213,16 @@ func getDBConnURL() string {
 		os.Getenv("DB_NAME"),
 		sslMode,
 	)
+}
+
+// Health check endpoint for monitoring and uptime services (no authentication required)
+func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "ok",
+		"time":   time.Now().UTC().Format(time.RFC3339),
+	})
 }
 
 // Handles user registration via POST request (expects 'username', 'email', 'password')
