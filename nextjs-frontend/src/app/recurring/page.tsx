@@ -73,6 +73,17 @@ export default function RecurringTransactionsPage() {
     const categoryInputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    // Helper function to handle API calls with automatic 401 redirect
+    const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            localStorage.removeItem('jwt_token');
+            router.push('/login');
+            throw new Error('Session expired. Please log in again.');
+        }
+        return response;
+    };
+
     // Check auth
     useEffect(() => {
         if (!initialized) return;
@@ -90,7 +101,7 @@ export default function RecurringTransactionsPage() {
         async function fetchData() {
             try {
                 // Fetch categories
-                const catRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const catRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const catData = await catRes.json();
@@ -99,7 +110,7 @@ export default function RecurringTransactionsPage() {
                 }
 
                 // Fetch recurring transactions
-                const recRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
+                const recRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const recData = await recRes.json();
@@ -268,7 +279,7 @@ export default function RecurringTransactionsPage() {
                 catFormData.append('name', categoryInput.trim());
                 catFormData.append('type', categoryType);
 
-                const catRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/add`, {
+                const catRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/add`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` },
                     body: catFormData,
@@ -304,7 +315,7 @@ export default function RecurringTransactionsPage() {
             if (!response.ok) throw new Error('Failed to save recurring transaction');
 
             // Refresh list
-            const recRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
+            const recRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const recData = await recRes.json();
@@ -356,7 +367,7 @@ export default function RecurringTransactionsPage() {
             const formData = new FormData();
             formData.append('id', String(id));
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recurring/delete`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/recurring/delete`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,

@@ -50,6 +50,17 @@ export default function BudgetsPage() {
     const [alertThreshold, setAlertThreshold] = useState(80);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
 
+    // Helper function to handle API calls with automatic 401 redirect
+    const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            localStorage.removeItem('jwt_token');
+            router.push('/login');
+            throw new Error('Session expired. Please log in again.');
+        }
+        return response;
+    };
+
     // Check auth token on mount and redirect if needed
     useEffect(() => {
         if (!initialized) return;
@@ -132,7 +143,7 @@ export default function BudgetsPage() {
         if (!token) return;
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -149,7 +160,7 @@ export default function BudgetsPage() {
     const fetchCategories = async () => {
         if (!token) return;
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -238,7 +249,7 @@ export default function BudgetsPage() {
             const formData = new FormData();
             formData.append('id', deleteConfirm.id.toString());
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/budget/delete`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/delete`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData

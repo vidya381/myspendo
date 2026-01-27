@@ -180,6 +180,18 @@ export default function Dashboard() {
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    // Helper function to handle API calls with automatic 401 redirect
+    const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            // Token expired or invalid - clear and redirect to login
+            localStorage.removeItem('jwt_token');
+            router.push('/login');
+            throw new Error('Session expired. Please log in again.');
+        }
+        return response;
+    };
+
     // Check auth token on mount and redirect if needed
     useEffect(() => {
         if (!initialized) return;
@@ -258,7 +270,7 @@ export default function Dashboard() {
         async function fetchData() {
             try {
                 // 1. Current month summary (includes normalized recurring)
-                const summaryRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/summary/current-month`, {
+                const summaryRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/summary/current-month`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!summaryRes.ok) throw new Error('Failed to fetch summary');
@@ -270,7 +282,7 @@ export default function Dashboard() {
                 });
 
                 // 2. Fetch monthly history for historical modal
-                const historyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/summary/monthly`, {
+                const historyRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/summary/monthly`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (historyRes.ok) {
@@ -279,7 +291,7 @@ export default function Dashboard() {
                     const last6Months = (historyData || []).slice(0, 6);
 
                     // Fetch recurring list to calculate monthly recurring for each month
-                    const recurringRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
+                    const recurringRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     const recurringList: any[] = recurringRes.ok ? await recurringRes.json() : [];
@@ -307,7 +319,7 @@ export default function Dashboard() {
                 }
 
                 // 3. Spending breakdown by category for current month
-                const spendingRes = await fetch(
+                const spendingRes = await fetchWithAuth(
                     `${process.env.NEXT_PUBLIC_API_URL}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -329,7 +341,7 @@ export default function Dashboard() {
                     limit: '1000', // High limit to get all transactions
                 });
 
-                const txRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
+                const txRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!txRes.ok) throw new Error('Failed to fetch transactions');
@@ -358,7 +370,7 @@ export default function Dashboard() {
                 setHasMore(false);
 
                 // 5. Fetch budgets
-                const budgetsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
+                const budgetsRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (budgetsRes.ok) {
@@ -530,7 +542,7 @@ export default function Dashboard() {
 
         async function fetchCategories() {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -562,7 +574,7 @@ export default function Dashboard() {
         });
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
+            const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -669,7 +681,7 @@ export default function Dashboard() {
             const formData = new FormData();
             formData.append('id', String(transactionId));
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

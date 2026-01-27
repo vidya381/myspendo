@@ -62,6 +62,17 @@ export default function TransactionsPage() {
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    // Helper function to handle API calls with automatic 401 redirect
+    const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            localStorage.removeItem('jwt_token');
+            router.push('/login');
+            throw new Error('Session expired. Please log in again.');
+        }
+        return response;
+    };
+
     // Prevent background scroll when modals are open
     useEffect(() => {
         if (showDetails || showActionMenu || showTransactionModal) {
@@ -90,7 +101,7 @@ export default function TransactionsPage() {
 
         const fetchCategories = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -114,7 +125,7 @@ export default function TransactionsPage() {
             setError(null);
 
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transaction/list`, {
+                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -242,7 +253,7 @@ export default function TransactionsPage() {
             const formData = new FormData();
             formData.append('id', id.toString());
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
+            const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,

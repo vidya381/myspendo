@@ -49,6 +49,11 @@ export function useApi() {
         });
 
         if (!res.ok) {
+            if (res.status === 401) {
+                localStorage.removeItem('jwt_token');
+                window.location.href = '/login';
+                return Promise.reject(new Error('Unauthorized — please log in again'));
+            }
             const errorBody = await res.json().catch(() => ({}));
             throw new Error(errorBody.error || 'API request failed');
         }
