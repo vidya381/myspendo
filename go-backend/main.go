@@ -197,7 +197,7 @@ func getDBConnURL() string {
 	}
 
 	// Fallback to individual environment variables for local development
-	// Default to require SSL for production safety (Supabase, Render, etc.)
+	// Default to require SSL for production safety (Neon, Render, etc.)
 	// Can be overridden with DB_SSLMODE=disable for local development
 	sslMode := os.Getenv("DB_SSLMODE")
 	if sslMode == "" {

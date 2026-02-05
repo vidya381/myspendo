@@ -20,4 +20,5 @@ vendor/
 .DS_Store
 Thumbs.db
 
-Testing.txt
+ORACLE_CLOUD_DEPLOYMENT.md
+PROJECT_OVERVIEW.md
