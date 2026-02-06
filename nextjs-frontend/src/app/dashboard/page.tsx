@@ -243,16 +243,26 @@ export default function Dashboard() {
         };
     }, [authChecked, token]);
 
-    // Lock body scroll when historical modal is open
+    // Lock body scroll when historical modal is open (with scrollbar compensation)
     useEffect(() => {
         if (showHistoricalModal) {
+            // Calculate scrollbar width to prevent content shift
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+            // Apply overflow hidden and compensate for scrollbar
             document.body.style.overflow = 'hidden';
+            if (scrollbarWidth > 0) {
+                document.body.style.paddingRight = `${scrollbarWidth}px`;
+            }
         } else {
+            // Remove overflow lock and padding
             document.body.style.overflow = 'unset';
+            document.body.style.paddingRight = '0px';
         }
 
         return () => {
             document.body.style.overflow = 'unset';
+            document.body.style.paddingRight = '0px';
         };
     }, [showHistoricalModal]);
 
