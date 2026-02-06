@@ -288,34 +288,51 @@ export default function Dashboard() {
 
         async function fetchData() {
             try {
-                // 1. Current month summary (includes normalized recurring)
-                const summaryRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/current-month`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (!summaryRes.ok) throw new Error('Failed to fetch summary');
-                const summaryJson = await summaryRes.json();
-                setSummary({
-                    total_expenses: summaryJson.monthly_expenses || 0,
-                    total_income: summaryJson.monthly_income || 0,
-                    recurring_expenses: summaryJson.monthly_recurring || 0
-                });
+                // Fetch all data in PARALLEL for faster loading
+                const [summaryRes, historyRes, txRes, budgetsRes] = await Promise.all([
+                    // 1. Current month summary
+                    fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/current-month`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    // 2. Monthly history
+                    fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/monthly`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    // 3. Transactions
+                    fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/transactions/search?${new URLSearchParams({
+                        month: format(new Date(), 'yyyy-MM'),
+                        sort: sortOrder,
+                        limit: '1000',
+                    }).toString()}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    // 4. Budgets (now loads in parallel!)
+                    fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/budget/list`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                ]);
 
-                // 2. Fetch monthly history for historical modal
-                const historyRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/monthly`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                // Process summary
+                if (summaryRes.ok) {
+                    const summaryJson = await summaryRes.json();
+                    setSummary({
+                        total_expenses: summaryJson.monthly_expenses || 0,
+                        total_income: summaryJson.monthly_income || 0,
+                        recurring_expenses: summaryJson.monthly_recurring || 0
+                    });
+                }
+
+                // Process monthly history
                 if (historyRes.ok) {
                     const historyData = await historyRes.json();
-                    // Get last 6 months and calculate recurring for each
                     const last6Months = (historyData || []).slice(0, 6);
 
-                    // Fetch recurring list to calculate monthly recurring for each month
+                    // Fetch recurring list separately
                     const recurringRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/recurring/list`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     const recurringList: any[] = recurringRes.ok ? await recurringRes.json() : [];
 
-                    // Calculate normalized recurring (assume it's constant for now)
                     const normalizedRecurring = (Array.isArray(recurringList) ? recurringList : []).reduce((acc, item) => {
                         if (item && item.recurrence && item.amount && item.amount > 0) {
                             switch (item.recurrence) {
@@ -337,68 +354,46 @@ export default function Dashboard() {
                     setMonthlyHistory(history);
                 }
 
-                // 3. Transactions list - Fetch current month transactions
-                const currentMonth = format(new Date(), 'yyyy-MM');
-                const params = new URLSearchParams({
-                    month: currentMonth,
-                    sort: sortOrder,
-                    limit: '1000', // High limit to get all transactions
-                });
+                // Process transactions
+                if (txRes.ok) {
+                    const txData = await txRes.json();
+                    const txArray = txData.transactions || [];
+                    const uniqueTransactions = Array.isArray(txArray)
+                        ? txArray.filter((tx: Transaction, index: number, self: Transaction[]) =>
+                            index === self.findIndex((t: Transaction) => t.id === tx.id)
+                        )
+                        : [];
 
-                const txRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/transactions/search?${params.toString()}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (!txRes.ok) throw new Error('Failed to fetch transactions');
-                const txData = await txRes.json();
+                    const sortedTransactions = [...uniqueTransactions].sort((a, b) => {
+                        const dateA = new Date(a.date).getTime();
+                        const dateB = new Date(b.date).getTime();
+                        return sortOrder === 'date_desc' ? dateB - dateA : dateA - dateB;
+                    });
 
-                // Ensure no duplicates in initial load
-                const txArray = txData.transactions || [];
-                const uniqueTransactions = Array.isArray(txArray)
-                    ? txArray.filter((tx: Transaction, index: number, self: Transaction[]) =>
-                        index === self.findIndex((t: Transaction) => t.id === tx.id)
-                    )
-                    : [];
+                    setAllTransactions(sortedTransactions);
+                    setTransactions(sortedTransactions);
+                    setPage(1);
+                    setHasMore(false);
+                }
 
-                // Sort transactions based on current sortOrder
-                const sortedTransactions = [...uniqueTransactions].sort((a, b) => {
-                    const dateA = new Date(a.date).getTime();
-                    const dateB = new Date(b.date).getTime();
-                    return sortOrder === 'date_desc' ? dateB - dateA : dateA - dateB;
-                });
-
-                // Store all transactions
-                setAllTransactions(sortedTransactions);
-                setTransactions(sortedTransactions);
-                setPage(1);
-                // No pagination - we fetch all transactions at once
-                setHasMore(false);
-
-                // 4. Fetch budgets
-                const budgetsRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/budget/list`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                // Process budgets
                 if (budgetsRes.ok) {
                     const budgetsData = await budgetsRes.json();
                     const budgetsList = budgetsData.success ? (budgetsData.budgets || []) : [];
                     setBudgets(budgetsList);
 
-                    // Filter budgets that have exceeded their alert threshold
                     const alerts = budgetsList.filter((b: Budget) => {
                         const progress = (b.current_spending / b.amount) * 100;
                         return progress >= b.alert_threshold;
                     });
                     setBudgetAlerts(alerts);
 
-                    // Show toast notification only once per session
                     const alertsShown = sessionStorage.getItem('budgetAlertsShown');
                     if (alerts.length > 0 && !alertsShown) {
                         setShowToast(true);
                         sessionStorage.setItem('budgetAlertsShown', 'true');
-
-                        // Auto-dismiss toast after 8 seconds
                         setTimeout(() => setShowToast(false), 8000);
                     } else if (alertsShown) {
-                        // If already shown this session, keep toast dismissed
                         setShowToast(false);
                     }
                 }
@@ -799,13 +794,123 @@ export default function Dashboard() {
         setSelectedMonth(format(next, 'yyyy-MM'));
     }
 
-    // Show loading screen ONLY on initial load (no data yet)
+    // Show loading skeletons ONLY on initial load (no data yet)
     if (!authChecked || (loading && !summary && budgets.length === 0 && transactions.length === 0)) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
-                    <p className="text-gray-600 font-medium">Loading your dashboard...</p>
+            <div className="min-h-screen bg-slate-50 pb-24 sm:pb-8">
+                {/* Header Skeleton */}
+                <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-gray-200 rounded-xl animate-pulse"></div>
+                                <div className="h-7 w-32 bg-gray-200 rounded animate-pulse"></div>
+                            </div>
+                            <div className="h-10 w-24 bg-gray-200 rounded-lg animate-pulse"></div>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                    {/* Summary Cards Skeleton */}
+                    <section>
+                        <div className="hidden md:grid grid-cols-3 gap-6">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-pulse">
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex-1">
+                                            <div className="h-4 bg-gray-200 rounded w-32 mb-3"></div>
+                                            <div className="h-8 bg-gray-200 rounded w-24"></div>
+                                        </div>
+                                        <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Mobile Summary Card Skeleton */}
+                        <div className="md:hidden">
+                            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-pulse">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex-1">
+                                        <div className="h-4 bg-gray-200 rounded w-32 mb-3"></div>
+                                        <div className="h-8 bg-gray-200 rounded w-24"></div>
+                                    </div>
+                                    <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+                                </div>
+                            </div>
+                            <div className="flex justify-center gap-2 mt-4">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="h-2 w-2 bg-gray-200 rounded-full animate-pulse"></div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Spending Breakdown Skeleton */}
+                    <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="h-6 bg-gray-200 rounded w-48 animate-pulse"></div>
+                            <div className="h-10 w-32 bg-gray-200 rounded-xl animate-pulse"></div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 p-5 rounded-xl border-2 border-gray-200 animate-pulse">
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex-1">
+                                            <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+                                            <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                        </div>
+                                        <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                                    </div>
+                                    <div className="mt-4">
+                                        <div className="h-2 bg-gray-200 rounded-full w-full"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Budget Overview Skeleton */}
+                    <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
+                        <div className="h-6 bg-gray-200 rounded w-40 mb-6 animate-pulse"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-3 animate-pulse">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <div className="flex-1">
+                                            <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                            <div className="h-3 bg-gray-200 rounded w-16"></div>
+                                        </div>
+                                    </div>
+                                    <div className="mb-2">
+                                        <div className="h-5 bg-gray-200 rounded w-20 mb-2"></div>
+                                        <div className="h-1.5 bg-gray-200 rounded-full w-full mb-2"></div>
+                                        <div className="h-3 bg-gray-200 rounded w-24"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Transaction History Skeleton */}
+                    <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
+                        <div className="h-6 bg-gray-200 rounded w-48 mb-6 animate-pulse"></div>
+                        <div className="space-y-3">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl animate-pulse">
+                                    <div className="flex items-center gap-3 flex-1">
+                                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                        <div className="flex-1">
+                                            <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                            <div className="h-3 bg-gray-200 rounded w-20"></div>
+                                        </div>
+                                    </div>
+                                    <div className="h-5 bg-gray-200 rounded w-16"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
                 </div>
             </div>
         );
@@ -1122,7 +1227,34 @@ export default function Dashboard() {
                 </section>
 
                 {/* 3. Budget Overview - Status-Based with Time-Aware Info */}
-                {budgets.length > 0 && (() => {
+                {(() => {
+                    // Show skeleton while budgets are loading
+                    if (loading || budgets.length === 0) {
+                        return (
+                            <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
+                                <div className="h-6 bg-gray-200 rounded w-40 mb-6 animate-pulse"></div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl p-3 animate-pulse">
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div className="flex-1">
+                                                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                                                </div>
+                                            </div>
+                                            <div className="mb-2">
+                                                <div className="h-5 bg-gray-200 rounded w-20 mb-2"></div>
+                                                <div className="h-1.5 bg-gray-200 rounded-full w-full mb-2"></div>
+                                                <div className="h-3 bg-gray-200 rounded w-24"></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        );
+                    }
+
+                    // Show actual budgets when loaded
                     // Use memoized budget groupings
                     const { overBudget, warning, onTrack } = groupedBudgets;
 
