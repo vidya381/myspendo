@@ -52,7 +52,7 @@ export default function RegisterPage() {
         }
 
         // Check if API URL is configured
-        const apiUrl = "/api";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
         if (!apiUrl) {
             setError("API configuration error. Please contact support.");
             return;

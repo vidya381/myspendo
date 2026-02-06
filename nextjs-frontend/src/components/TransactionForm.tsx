@@ -76,7 +76,7 @@ export default function TransactionForm({
         async function fetchCategories() {
             setLoadingCategories(true);
             try {
-                const res = await fetch(`${"/api"}/category/list`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -193,7 +193,7 @@ export default function TransactionForm({
                 formData.append('name', categoryInput.trim());
                 formData.append('type', categoryType);
 
-                const res = await fetch(`${"/api"}/category/add`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/category/add`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` },
                     body: formData,
@@ -230,8 +230,8 @@ export default function TransactionForm({
             }
 
             const txUrl = initialValues.id
-                ? `${"/api"}/transaction/update`
-                : `${"/api"}/transaction/add`;
+                ? `${process.env.NEXT_PUBLIC_API_URL || "/api"}/transaction/update`
+                : `${process.env.NEXT_PUBLIC_API_URL || "/api"}/transaction/add`;
 
             const txRes = await fetch(txUrl, {
                 method: 'POST',

@@ -101,7 +101,7 @@ export default function RecurringTransactionsPage() {
         async function fetchData() {
             try {
                 // Fetch categories
-                const catRes = await fetchWithAuth(`${"/api"}/category/list`, {
+                const catRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const catData = await catRes.json();
@@ -110,7 +110,7 @@ export default function RecurringTransactionsPage() {
                 }
 
                 // Fetch recurring transactions
-                const recRes = await fetchWithAuth(`${"/api"}/recurring/list`, {
+                const recRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/recurring/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const recData = await recRes.json();
@@ -279,7 +279,7 @@ export default function RecurringTransactionsPage() {
                 catFormData.append('name', categoryInput.trim());
                 catFormData.append('type', categoryType);
 
-                const catRes = await fetchWithAuth(`${"/api"}/category/add`, {
+                const catRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/category/add`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` },
                     body: catFormData,
@@ -306,7 +306,7 @@ export default function RecurringTransactionsPage() {
             }
 
             const endpoint = editingId ? '/recurring/edit' : '/recurring/add';
-            const response = await fetch(`${"/api"}${endpoint}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "/api"}${endpoint}`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,
@@ -315,7 +315,7 @@ export default function RecurringTransactionsPage() {
             if (!response.ok) throw new Error('Failed to save recurring transaction');
 
             // Refresh list
-            const recRes = await fetchWithAuth(`${"/api"}/recurring/list`, {
+            const recRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/recurring/list`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const recData = await recRes.json();
@@ -367,7 +367,7 @@ export default function RecurringTransactionsPage() {
             const formData = new FormData();
             formData.append('id', String(id));
 
-            const response = await fetchWithAuth(`${"/api"}/recurring/delete`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/recurring/delete`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,

@@ -2,11 +2,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiDollarSign, FiTrendingUp, FiRepeat, FiPlus, FiArrowUp, FiCalendar, FiEdit2, FiTrash2, FiAlertTriangle, FiX, FiBell, FiLogOut, FiHome, FiList } from 'react-icons/fi';
+import { FiDollarSign, FiTrendingUp, FiRepeat, FiPlus, FiArrowUp, FiCalendar, FiEdit2, FiTrash2, FiAlertTriangle, FiX, FiBell, FiLogOut, FiLogIn, FiHome, FiList } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { format, parseISO, subMonths } from 'date-fns';
 import TransactionForm from '../../components/TransactionForm';
-import LoginModal from '../../components/LoginModal';
 
 // Calendar date helpers - treat dates as pure calendar days without timezone conversion
 const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -177,9 +176,6 @@ export default function Dashboard() {
     // Transaction modal state
     const [showTransactionModal, setShowTransactionModal] = useState(false);
     const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-
-    // Login modal state
-    const [showLoginModal, setShowLoginModal] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -262,7 +258,17 @@ export default function Dashboard() {
 
     // Fetch data whenever token or filters/month changes
     useEffect(() => {
-        if (!token || !authChecked) return;
+        if (!authChecked) return;
+
+        // Guest mode: no token, show empty states
+        if (!token) {
+            setLoading(false);
+            setSummary(null);
+            setTransactions([]);
+            setSpendingData([]);
+            setBudgets([]);
+            return;
+        }
 
         setLoading(true);
         setError(null);
@@ -270,7 +276,7 @@ export default function Dashboard() {
         async function fetchData() {
             try {
                 // 1. Current month summary (includes normalized recurring)
-                const summaryRes = await fetchWithAuth(`${"/api"}/summary/current-month`, {
+                const summaryRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/current-month`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!summaryRes.ok) throw new Error('Failed to fetch summary');
@@ -282,7 +288,7 @@ export default function Dashboard() {
                 });
 
                 // 2. Fetch monthly history for historical modal
-                const historyRes = await fetchWithAuth(`${"/api"}/summary/monthly`, {
+                const historyRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/monthly`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (historyRes.ok) {
@@ -291,7 +297,7 @@ export default function Dashboard() {
                     const last6Months = (historyData || []).slice(0, 6);
 
                     // Fetch recurring list to calculate monthly recurring for each month
-                    const recurringRes = await fetchWithAuth(`${"/api"}/recurring/list`, {
+                    const recurringRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/recurring/list`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     const recurringList: any[] = recurringRes.ok ? await recurringRes.json() : [];
@@ -320,7 +326,7 @@ export default function Dashboard() {
 
                 // 3. Spending breakdown by category for current month
                 const spendingRes = await fetchWithAuth(
-                    `${"/api"}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
+                    `${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 if (!spendingRes.ok) throw new Error('Failed to fetch spending breakdown');
@@ -341,7 +347,7 @@ export default function Dashboard() {
                     limit: '1000', // High limit to get all transactions
                 });
 
-                const txRes = await fetchWithAuth(`${"/api"}/transactions/search?${params.toString()}`, {
+                const txRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/transactions/search?${params.toString()}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!txRes.ok) throw new Error('Failed to fetch transactions');
@@ -370,7 +376,7 @@ export default function Dashboard() {
                 setHasMore(false);
 
                 // 5. Fetch budgets
-                const budgetsRes = await fetchWithAuth(`${"/api"}/budget/list`, {
+                const budgetsRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/budget/list`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (budgetsRes.ok) {
@@ -542,7 +548,7 @@ export default function Dashboard() {
 
         async function fetchCategories() {
             try {
-                const res = await fetchWithAuth(`${"/api"}/category/list`, {
+                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -574,7 +580,7 @@ export default function Dashboard() {
         });
 
         try {
-            const res = await fetchWithAuth(`${"/api"}/transactions/search?${params.toString()}`, {
+            const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/transactions/search?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -638,7 +644,7 @@ export default function Dashboard() {
         }
     };
 
-    // Handler to open historical modal
+    // Handler to open historical modal (only for authenticated users)
     const openHistoricalModal = (type: 'expenses' | 'income' | 'recurring') => {
         setHistoricalType(type);
         setShowHistoricalModal(true);
@@ -681,7 +687,7 @@ export default function Dashboard() {
             const formData = new FormData();
             formData.append('id', String(transactionId));
 
-            const response = await fetchWithAuth(`${"/api"}/transaction/delete`, {
+            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/transaction/delete`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -827,24 +833,45 @@ export default function Dashboard() {
                                     </span>
                                 )}
                             </button>
-                            <button
-                                onClick={logout}
-                                className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
-                                aria-label="Logout"
-                            >
-                                <FiLogOut className="w-4 h-4" />
-                                <span>Logout</span>
-                            </button>
+                            {token ? (
+                                <button
+                                    onClick={logout}
+                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                    aria-label="Logout"
+                                >
+                                    <FiLogOut className="w-4 h-4" />
+                                    <span>Logout</span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => router.push('/login')}
+                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all"
+                                    aria-label="Sign In"
+                                >
+                                    <FiLogIn className="w-4 h-4" />
+                                    <span>Sign In</span>
+                                </button>
+                            )}
                         </div>
-                        {/* Mobile Logout Only */}
+                        {/* Mobile Auth Button */}
                         <div className="sm:hidden">
-                            <button
-                                onClick={logout}
-                                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
-                                aria-label="Logout"
-                            >
-                                <FiLogOut className="w-4 h-4" />
-                            </button>
+                            {token ? (
+                                <button
+                                    onClick={logout}
+                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                    aria-label="Logout"
+                                >
+                                    <FiLogOut className="w-4 h-4" />
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => router.push('/login')}
+                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                                    aria-label="Sign In"
+                                >
+                                    <FiLogIn className="w-4 h-4" />
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -861,7 +888,7 @@ export default function Dashboard() {
                             value={formatCurrency(summary?.total_expenses || 0)}
                             gradient="from-red-500 to-pink-500"
                             bgGradient="from-red-50 to-pink-50"
-                            onClick={() => openHistoricalModal('expenses')}
+                            {...(token && { onClick: () => openHistoricalModal('expenses') })}
                         />
                         <Card
                             icon={<FiDollarSign size={32} />}
@@ -869,7 +896,7 @@ export default function Dashboard() {
                             value={formatCurrency(summary?.total_income || 0)}
                             gradient="from-green-500 to-emerald-500"
                             bgGradient="from-green-50 to-emerald-50"
-                            onClick={() => openHistoricalModal('income')}
+                            {...(token && { onClick: () => openHistoricalModal('income') })}
                         />
                         <Card
                             icon={<FiRepeat size={32} />}
@@ -899,7 +926,7 @@ export default function Dashboard() {
                                         value={formatCurrency(summary?.total_expenses || 0)}
                                         gradient="from-red-500 to-pink-500"
                                         bgGradient="from-red-50 to-pink-50"
-                                        onClick={() => openHistoricalModal('expenses')}
+                                        {...(token && { onClick: () => openHistoricalModal('expenses') })}
                                     />
                                 </div>
                                 <div className="w-full flex-shrink-0 px-1">
@@ -907,9 +934,9 @@ export default function Dashboard() {
                                         icon={<FiDollarSign size={32} />}
                                         label="This Month Income"
                                         value={formatCurrency(summary?.total_income || 0)}
-                                        gradient="from-green-500 to-emerald-500"
+                                        gradient="from-green-500 to-emerald-50"
                                         bgGradient="from-green-50 to-emerald-50"
-                                        onClick={() => openHistoricalModal('income')}
+                                        {...(token && { onClick: () => openHistoricalModal('income') })}
                                     />
                                 </div>
                                 <div className="w-full flex-shrink-0 px-1">
@@ -1640,7 +1667,7 @@ export default function Dashboard() {
             <button
                 onClick={() => {
                     if (!token) {
-                        setShowLoginModal(true);
+                        router.push('/login');
                     } else {
                         setEditingTransaction(null);
                         setShowTransactionModal(true);
@@ -1787,7 +1814,7 @@ export default function Dashboard() {
             <button
                 onClick={() => {
                     if (!token) {
-                        setShowLoginModal(true);
+                        router.push('/login');
                     } else {
                         setShowTransactionModal(true);
                     }
@@ -1847,16 +1874,6 @@ export default function Dashboard() {
                     </button>
                 </div>
             </nav>
-
-            {/* Login Modal */}
-            <LoginModal
-                isOpen={showLoginModal}
-                onClose={() => setShowLoginModal(false)}
-                onSuccess={() => {
-                    setShowLoginModal(false);
-                    window.location.reload();
-                }}
-            />
         </div>
     );
 }

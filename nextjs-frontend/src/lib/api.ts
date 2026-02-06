@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 
-// Use /api prefix for Vercel proxy (rewrites to Oracle Cloud backend)
-const BASE = '/api';
+// Use /api for production (Vercel proxy), or env var for local dev
+const BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 // A regular function to call API with token, independent of React hooks
 export async function apiFetch(
