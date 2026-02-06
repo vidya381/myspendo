@@ -865,6 +865,7 @@ export default function Dashboard() {
                                     aria-label="Logout"
                                 >
                                     <FiLogOut className="w-4 h-4" />
+                                    <span>Logout</span>
                                 </button>
                             ) : (
                                 <button
@@ -873,6 +874,7 @@ export default function Dashboard() {
                                     aria-label="Sign In"
                                 >
                                     <FiLogIn className="w-4 h-4" />
+                                    <span>Sign In</span>
                                 </button>
                             )}
                         </div>
@@ -1131,62 +1133,54 @@ export default function Dashboard() {
 
                         return (
                             <div
-                                className={`${statusConfig.bgColor} border ${statusConfig.borderColor} rounded-xl p-4 hover:shadow-lg transition-all duration-200`}
+                                className={`${statusConfig.bgColor} border ${statusConfig.borderColor} rounded-xl p-3 hover:shadow-lg transition-all duration-200`}
                             >
                                 {/* Header */}
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex-1">
-                                        <h3 className="font-bold text-gray-900 text-sm mb-1">
+                                <div className="flex items-start justify-between mb-2">
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="font-bold text-gray-900 text-sm mb-1 truncate">
                                             {budget.category_name}
                                         </h3>
-                                        <span className="text-xs px-2 py-1 bg-white rounded-full text-gray-600 capitalize">
+                                        <span className="text-[10px] px-1.5 py-0.5 bg-white rounded-full text-gray-600 capitalize">
                                             {budget.period}
                                         </span>
                                     </div>
-                                    {statusConfig.icon}
+                                    {statusConfig.icon && <div className="flex-shrink-0 ml-2">{statusConfig.icon}</div>}
                                 </div>
 
                                 {/* Amount and Progress */}
-                                <div className="mb-3">
-                                    <div className="flex items-baseline justify-between mb-2">
-                                        <span className={`text-2xl font-bold ${statusConfig.textColor}`}>
+                                <div className="mb-2">
+                                    <div className="flex items-baseline justify-between mb-1">
+                                        <span className={`text-lg font-bold ${statusConfig.textColor}`}>
                                             ${budget.current_spending.toFixed(0)}
                                         </span>
-                                        <span className="text-sm text-gray-600">
+                                        <span className="text-xs text-gray-600">
                                             / ${budget.amount.toFixed(0)}
                                         </span>
                                     </div>
 
-                                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden mb-2">
+                                    <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden mb-1">
                                         <div
                                             className={`h-full ${statusConfig.progressColor} transition-all duration-500`}
                                             style={{ width: `${progress}%` }}
                                         />
                                     </div>
 
-                                    <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                                    <div className="flex items-center justify-between text-[10px] text-gray-600">
                                         <span>{progress.toFixed(0)}% used</span>
                                         <span className="font-semibold">${remaining.toFixed(0)} left</span>
                                     </div>
                                 </div>
 
                                 {/* Time-Aware Information */}
-                                <div className="pt-3 border-t border-gray-200/50 space-y-1.5">
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className="text-gray-600">Days remaining:</span>
-                                        <span className="font-semibold text-gray-900">{daysLeft} days</span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className="text-gray-600">Daily spending:</span>
+                                <div className="pt-2 border-t border-gray-200/50 space-y-1">
+                                    <div className="flex items-center justify-between text-[10px]">
+                                        <span className="text-gray-600">{daysLeft} days left</span>
                                         <span className={`font-semibold ${
                                             actualDailyBurn > allowedDailyBurn ? 'text-rose-600' : 'text-emerald-600'
                                         }`}>
-                                            ${actualDailyBurn.toFixed(2)}/day
+                                            ${actualDailyBurn.toFixed(1)}/day
                                         </span>
-                                    </div>
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className="text-gray-600">Budget allows:</span>
-                                        <span className="font-semibold text-gray-900">${allowedDailyBurn.toFixed(2)}/day</span>
                                     </div>
                                 </div>
                             </div>
@@ -1659,7 +1653,7 @@ export default function Dashboard() {
             {showScrollTop && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 p-3 bg-white border-2 border-emerald-200 text-emerald-600 rounded-full shadow-xl hover:bg-emerald-50 hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
+                    className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 xl:right-20 p-3 bg-white border-2 border-emerald-200 text-emerald-600 rounded-full shadow-xl hover:bg-emerald-50 hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
                     aria-label="Scroll to top"
                 >
                     <FiArrowUp className="w-5 h-5" />

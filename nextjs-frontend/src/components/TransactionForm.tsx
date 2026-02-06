@@ -64,15 +64,24 @@ export default function TransactionForm({
             : new Date().toISOString().slice(0, 10)
     );
 
-    const [loadingCategories, setLoadingCategories] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(categories.length === 0);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [userHasInteracted, setUserHasInteracted] = useState(false);
 
     const categoryInputRef = useRef<HTMLInputElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        // If categories are already provided, use them without fetching
+        if (categories.length > 0) {
+            setFilteredCategories(categories);
+            setLoadingCategories(false);
+            return;
+        }
+
+        // Otherwise, fetch categories
         async function fetchCategories() {
             setLoadingCategories(true);
             try {
@@ -93,12 +102,12 @@ export default function TransactionForm({
             }
         }
         fetchCategories();
-    }, [token]);
+    }, [token, categories]);
 
     useEffect(() => {
         if (!categories || categories.length === 0) {
             // If no categories exist yet, and user is typing, show type input
-            if (categoryInput) {
+            if (categoryInput && userHasInteracted) {
                 setFilteredCategories([]);
                 setCategoryId(null);
                 setShowCategoryTypeInput(true);
@@ -130,15 +139,16 @@ export default function TransactionForm({
             setShowDropdown(false);
         } else {
             setCategoryId(null);
-            setShowCategoryTypeInput(true);
-            // Only show dropdown if there are filtered results and no exact match
-            if (filtered.length > 0) {
+            // Only show category type input if user has interacted
+            setShowCategoryTypeInput(userHasInteracted);
+            // Only show dropdown if there are filtered results, no exact match, and user has interacted
+            if (filtered.length > 0 && userHasInteracted) {
                 setShowDropdown(true);
             } else {
                 setShowDropdown(false);
             }
         }
-    }, [categoryInput, categories]);
+    }, [categoryInput, categories, userHasInteracted]);
 
     // Handle clicks outside dropdown
     useEffect(() => {
@@ -284,8 +294,12 @@ export default function TransactionForm({
                     <input
                         id="category"
                         value={categoryInput}
-                        onChange={(e) => setCategoryInput(e.target.value)}
+                        onChange={(e) => {
+                            setUserHasInteracted(true);
+                            setCategoryInput(e.target.value);
+                        }}
                         onFocus={() => {
+                            setUserHasInteracted(true);
                             if (categoryInput && filteredCategories.length > 0) {
                                 setShowDropdown(true);
                             }
@@ -331,9 +345,6 @@ export default function TransactionForm({
                         </div>
                     )}
                 </div>
-                {loadingCategories && (
-                    <p className="mt-1 text-xs text-gray-500">Loading categories...</p>
-                )}
             </div>
 
             {showCategoryTypeInput && (
@@ -448,7 +459,7 @@ export default function TransactionForm({
                     disabled={loadingSubmit || loadingCategories}
                     className={`flex-1 py-3.5 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
                         loadingSubmit || loadingCategories
-                            ? "bg-emerald-400 cursor-not-allowed"
+                            ? "bg-emerald-600 cursor-not-allowed"
                             : "bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-lg hover:shadow-xl active:scale-[0.98]"
                     }`}
                 >

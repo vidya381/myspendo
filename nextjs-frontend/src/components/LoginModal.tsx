@@ -61,7 +61,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+                <div className="bg-gradient-to-r bg-emerald-600 px-6 py-4 flex justify-between items-center">
                     <h2 className="text-2xl font-bold text-white">Sign In</h2>
                     <button
                         onClick={onClose}
@@ -90,7 +90,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                 placeholder="you@example.com"
                                 required
                             />
@@ -108,7 +108,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                                 placeholder="••••••••"
                                 required
                             />
@@ -119,7 +119,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50"
+                        className="w-full bg-gradient-to-r bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50"
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
@@ -130,7 +130,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                         <button
                             type="button"
                             onClick={() => router.push('/register')}
-                            className="text-blue-600 font-semibold hover:underline"
+                            className="text-emerald-600 font-semibold hover:underline"
                         >
                             Sign Up
                         </button>
