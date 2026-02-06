@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiDollarSign, FiTrendingUp, FiRepeat, FiPlus, FiArrowUp, FiCalendar, FiEdit2, FiTrash2, FiAlertTriangle, FiX, FiBell, FiLogOut, FiLogIn, FiHome, FiList } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
@@ -256,7 +256,7 @@ export default function Dashboard() {
         };
     }, [showHistoricalModal]);
 
-    // Fetch data whenever token or filters/month changes
+    // Fetch main dashboard data (summary, budgets, transactions) - NOT dependent on selectedMonth
     useEffect(() => {
         if (!authChecked) return;
 
@@ -270,7 +270,10 @@ export default function Dashboard() {
             return;
         }
 
-        setLoading(true);
+        // Only show loading spinner on initial load
+        if (!summary && budgets.length === 0) {
+            setLoading(true);
+        }
         setError(null);
 
         async function fetchData() {
@@ -324,25 +327,10 @@ export default function Dashboard() {
                     setMonthlyHistory(history);
                 }
 
-                // 3. Spending breakdown by category for current month
-                const spendingRes = await fetchWithAuth(
-                    `${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                if (!spendingRes.ok) throw new Error('Failed to fetch spending breakdown');
-                const spendingJson = await spendingRes.json();
-                setSpendingData(
-                    Array.isArray(spendingJson)
-                        ? spendingJson.map((item: any) => ({
-                            category: item.category || 'Unknown',
-                            amount: item.total || 0,
-                        }))
-                        : []
-                );
-
-                // 4. Transactions list with filtering/sorting - Fetch ALL transactions
+                // 3. Transactions list - Fetch current month transactions
+                const currentMonth = format(new Date(), 'yyyy-MM');
                 const params = new URLSearchParams({
-                    month: selectedMonth,
+                    month: currentMonth,
                     sort: sortOrder,
                     limit: '1000', // High limit to get all transactions
                 });
@@ -375,7 +363,7 @@ export default function Dashboard() {
                 // No pagination - we fetch all transactions at once
                 setHasMore(false);
 
-                // 5. Fetch budgets
+                // 4. Fetch budgets
                 const budgetsRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || "/api"}/budget/list`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -412,7 +400,35 @@ export default function Dashboard() {
         }
 
         fetchData();
-    }, [token, authChecked, selectedMonth, refreshTrigger]); // Removed sortOrder - will handle client-side
+    }, [token, authChecked, refreshTrigger]); // Removed selectedMonth - will handle separately
+
+    // Fetch spending breakdown ONLY when selectedMonth changes (no full page reload!)
+    useEffect(() => {
+        if (!token || !authChecked) return;
+
+        async function fetchSpendingBreakdown() {
+            try {
+                const spendingRes = await fetchWithAuth(
+                    `${process.env.NEXT_PUBLIC_API_URL || "/api"}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                if (!spendingRes.ok) throw new Error('Failed to fetch spending breakdown');
+                const spendingJson = await spendingRes.json();
+                setSpendingData(
+                    Array.isArray(spendingJson)
+                        ? spendingJson.map((item: any) => ({
+                            category: item.category || 'Unknown',
+                            amount: item.total || 0,
+                        }))
+                        : []
+                );
+            } catch (err: any) {
+                console.error('Failed to fetch spending breakdown:', err);
+            }
+        }
+
+        fetchSpendingBreakdown();
+    }, [selectedMonth, token, authChecked]); // Only refetch spending data when month changes
 
     // Client-side sorting when sortOrder changes
     useEffect(() => {
@@ -563,6 +579,20 @@ export default function Dashboard() {
         fetchCategories();
     }, [token, showTransactionModal]);
 
+    // Memoize budget groupings to prevent recalculation on every render
+    const groupedBudgets = useMemo(() => {
+        const overBudget = budgets.filter(b => (b.current_spending / b.amount) * 100 >= 100);
+        const warning = budgets.filter(b => {
+            const progress = (b.current_spending / b.amount) * 100;
+            return progress >= b.alert_threshold && progress < 100;
+        });
+        const onTrack = budgets.filter(b => {
+            const progress = (b.current_spending / b.amount) * 100;
+            return progress < b.alert_threshold;
+        });
+        return { overBudget, warning, onTrack };
+    }, [budgets]);
+
     // Load more handler for pagination
     async function loadMore() {
         if (!token || loadingMore || !hasMore) return;
@@ -678,8 +708,8 @@ export default function Dashboard() {
         setTouchEndX(null);
     };
 
-    // Handle delete transaction
-    const handleDelete = async (transactionId: number) => {
+    // Handle delete transaction (memoized to prevent recreation on every render)
+    const handleDelete = useCallback(async (transactionId: number) => {
         if (!token) return;
 
         setDeleting(true);
@@ -710,7 +740,7 @@ export default function Dashboard() {
         } finally {
             setDeleting(false);
         }
-    };
+    }, [token]);
 
     // Jump to specific date
     const handleJumpToDate = () => {
@@ -759,8 +789,8 @@ export default function Dashboard() {
         setSelectedMonth(format(next, 'yyyy-MM'));
     }
 
-    // Show loading screen until auth check done or data loading
-    if (!authChecked || loading) {
+    // Show loading screen ONLY on initial load (no data yet)
+    if (!authChecked || (loading && !summary && budgets.length === 0 && transactions.length === 0)) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
@@ -1083,16 +1113,8 @@ export default function Dashboard() {
 
                 {/* 3. Budget Overview - Status-Based with Time-Aware Info */}
                 {budgets.length > 0 && (() => {
-                    // Group budgets by status
-                    const overBudget = budgets.filter(b => (b.current_spending / b.amount) * 100 >= 100);
-                    const warning = budgets.filter(b => {
-                        const progress = (b.current_spending / b.amount) * 100;
-                        return progress >= b.alert_threshold && progress < 100;
-                    });
-                    const onTrack = budgets.filter(b => {
-                        const progress = (b.current_spending / b.amount) * 100;
-                        return progress < b.alert_threshold;
-                    });
+                    // Use memoized budget groupings
+                    const { overBudget, warning, onTrack } = groupedBudgets;
 
                     const BudgetCard = ({ budget, status }: { budget: Budget; status: 'over' | 'warning' | 'ontrack' }) => {
                         const progress = Math.min((budget.current_spending / budget.amount) * 100, 100);
