@@ -6,6 +6,7 @@ import { FiDollarSign, FiTrendingUp, FiRepeat, FiPlus, FiArrowUp, FiCalendar, Fi
 import { useAuth } from '../../context/AuthContext';
 import { format, parseISO, subMonths } from 'date-fns';
 import TransactionForm from '../../components/TransactionForm';
+import LoginModal from '../../components/LoginModal';
 
 // Calendar date helpers - treat dates as pure calendar days without timezone conversion
 const MONTH_NAMES_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -176,6 +177,9 @@ export default function Dashboard() {
     // Transaction modal state
     const [showTransactionModal, setShowTransactionModal] = useState(false);
     const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+
+    // Login modal state
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const [categories, setCategories] = useState<Category[]>([]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -192,15 +196,11 @@ export default function Dashboard() {
         return response;
     };
 
-    // Check auth token on mount and redirect if needed
+    // Check auth token on mount (allow viewing without login)
     useEffect(() => {
         if (!initialized) return;
-        if (!token) {
-            router.replace('/login');
-        } else {
-            setAuthChecked(true);
-        }
-    }, [token, initialized, router]);
+        setAuthChecked(true);
+    }, [initialized]);
 
     // Refresh data when navigating back from add transaction page
     useEffect(() => {
@@ -1639,8 +1639,12 @@ export default function Dashboard() {
             {/* Floating Add Transaction Button - Desktop Only */}
             <button
                 onClick={() => {
-                    setEditingTransaction(null);
-                    setShowTransactionModal(true);
+                    if (!token) {
+                        setShowLoginModal(true);
+                    } else {
+                        setEditingTransaction(null);
+                        setShowTransactionModal(true);
+                    }
                 }}
                 aria-label="Add transaction"
                 className="hidden sm:flex fixed bottom-6 right-6 p-5 rounded-full shadow-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 items-center justify-center"
@@ -1781,7 +1785,13 @@ export default function Dashboard() {
 
             {/* Floating Action Button (FAB) - Mobile Only */}
             <button
-                onClick={() => setShowTransactionModal(true)}
+                onClick={() => {
+                    if (!token) {
+                        setShowLoginModal(true);
+                    } else {
+                        setShowTransactionModal(true);
+                    }
+                }}
                 className="sm:hidden fixed bottom-20 right-4 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95 hover:shadow-indigo-500/50"
                 aria-label="Add Transaction"
             >
@@ -1837,6 +1847,16 @@ export default function Dashboard() {
                     </button>
                 </div>
             </nav>
+
+            {/* Login Modal */}
+            <LoginModal
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                onSuccess={() => {
+                    setShowLoginModal(false);
+                    window.location.reload();
+                }}
+            />
         </div>
     );
 }
