@@ -801,7 +801,10 @@ export default function Dashboard() {
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2 sm:space-x-3">
+                        <button
+                            onClick={() => router.push('/dashboard')}
+                            className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
+                        >
                             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                                 <FiDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
@@ -809,7 +812,7 @@ export default function Dashboard() {
                                 <span className="hidden sm:inline">MySpendo</span>
                                 <span className="sm:hidden">MySpendo</span>
                             </h1>
-                        </div>
+                        </button>
                         {/* Desktop Navigation - Hidden on Mobile */}
                         <div className="hidden sm:flex items-center gap-2 sm:gap-3">
                             <button

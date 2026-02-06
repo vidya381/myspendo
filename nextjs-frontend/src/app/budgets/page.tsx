@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { FiPlus, FiEdit2, FiTrash2, FiAlertTriangle, FiCheckCircle, FiX, FiArrowLeft, FiDollarSign, FiHome, FiRepeat, FiList, FiLogOut } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiAlertTriangle, FiCheckCircle, FiX, FiArrowLeft, FiDollarSign, FiHome, FiRepeat, FiList, FiLogOut, FiLogIn } from 'react-icons/fi';
 
 interface Budget {
     id: number;
@@ -61,21 +61,25 @@ export default function BudgetsPage() {
         return response;
     };
 
-    // Check auth token on mount and redirect if needed
+    // Check auth token on mount (allow viewing without login)
     useEffect(() => {
         if (!initialized) return;
-        if (!token) {
-            router.replace('/login');
-        } else {
-            setAuthChecked(true);
-        }
-    }, [token, initialized, router]);
+        setAuthChecked(true);
+    }, [initialized]);
 
     useEffect(() => {
-        if (authChecked && token) {
-            fetchBudgets();
-            fetchCategories();
+        if (!authChecked) return;
+
+        // Guest mode: no token, show empty states
+        if (!token) {
+            setLoading(false);
+            setBudgets([]);
+            setCategories([]);
+            return;
         }
+
+        fetchBudgets();
+        fetchCategories();
     }, [authChecked, token]);
 
     // Prevent background scroll when modals are open
@@ -174,6 +178,10 @@ export default function BudgetsPage() {
     };
 
     const openAddModal = () => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
         setEditingBudget(null);
         setCategoryId(0);
         setAmount('');

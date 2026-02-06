@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { FiRepeat, FiEdit2, FiTrash2, FiPlus, FiArrowLeft, FiCalendar, FiX, FiHome, FiDollarSign, FiList, FiLogOut } from 'react-icons/fi';
+import { FiRepeat, FiEdit2, FiTrash2, FiPlus, FiArrowLeft, FiCalendar, FiX, FiHome, FiDollarSign, FiList, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { format, parseISO } from 'date-fns';
 
 // Calendar date helpers - treat dates as pure calendar days without timezone conversion
@@ -84,19 +84,23 @@ export default function RecurringTransactionsPage() {
         return response;
     };
 
-    // Check auth
+    // Check auth (allow viewing without login)
     useEffect(() => {
         if (!initialized) return;
-        if (!token) {
-            router.replace('/login');
-        } else {
-            setAuthChecked(true);
-        }
-    }, [token, initialized, router]);
+        setAuthChecked(true);
+    }, [initialized]);
 
     // Fetch data
     useEffect(() => {
-        if (!token || !authChecked) return;
+        if (!authChecked) return;
+
+        // Guest mode: no token, show empty states
+        if (!token) {
+            setLoading(false);
+            setRecurring([]);
+            setCategories([]);
+            return;
+        }
 
         async function fetchData() {
             try {
@@ -331,6 +335,10 @@ export default function RecurringTransactionsPage() {
     };
 
     const handleOpenModal = () => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
         setShowModal(true);
     };
 
