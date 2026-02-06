@@ -115,18 +115,18 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-br from-indigo-50 via-white to-purple-50 relative overflow-hidden">
+        <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-slate-50 relative overflow-hidden">
             {/* Decorative Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-                <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+                <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+                <div className="absolute top-40 right-10 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+                <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
             </div>
             
             <div className="w-full max-w-md relative z-10">
                 {/* Logo/Header Section */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-600 rounded-2xl shadow-lg mb-4">
                         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -174,7 +174,7 @@ export default function LoginPage() {
                                 <input
                                     id="email"
                                     type="email"
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
+                                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
                                     placeholder="you@example.com"
                                     value={email}
                                     onChange={(e) => {
@@ -207,7 +207,7 @@ export default function LoginPage() {
                                 <input
                                     id="password"
                                     type={showPassword ? "text" : "password"}
-                                    className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
+                                    className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
                                     placeholder="Enter your password"
                                     value={password}
                                     onChange={(e) => {
@@ -247,9 +247,9 @@ export default function LoginPage() {
                         type="submit"
                         disabled={loading}
                         className={`w-full mt-8 py-3.5 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
-                            loading 
-                                ? "bg-indigo-400 cursor-not-allowed" 
-                                : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                            loading
+                                ? "bg-emerald-400 cursor-not-allowed"
+                                : "bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-lg hover:shadow-xl active:scale-[0.98]"
                         }`}
                         aria-busy={loading}
                     >
@@ -275,9 +275,9 @@ export default function LoginPage() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Don't have an account?{" "}
-                            <Link 
-                                href="/register" 
-                                className="font-semibold text-indigo-600 hover:text-indigo-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 rounded"
+                            <Link
+                                href="/register"
+                                className="font-semibold text-emerald-600 hover:text-emerald-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1 rounded"
                             >
                                 Create one now
                             </Link>

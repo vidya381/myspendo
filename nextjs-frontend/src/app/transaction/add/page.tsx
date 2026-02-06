@@ -62,9 +62,9 @@ export default function AddTransactionPage() {
 
     if (!authChecked) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent mb-4"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading...</p>
                 </div>
             </div>
@@ -72,7 +72,7 @@ export default function AddTransactionPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="min-h-screen bg-slate-50">
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -87,7 +87,7 @@ export default function AddTransactionPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-2xl font-bold text-slate-800">
                                 Add Transaction
                             </h1>
                         </div>

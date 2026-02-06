@@ -85,15 +85,11 @@ export default function TransactionsPage() {
         };
     }, [showDetails, showActionMenu, showTransactionModal]);
 
-    // Auth check
+    // Auth check (allow viewing without login)
     useEffect(() => {
-        if (initialized) {
-            setAuthChecked(true);
-            if (!token) {
-                router.push('/login');
-            }
-        }
-    }, [initialized, token, router]);
+        if (!initialized) return;
+        setAuthChecked(true);
+    }, [initialized]);
 
     // Fetch categories
     useEffect(() => {
@@ -118,7 +114,14 @@ export default function TransactionsPage() {
 
     // Fetch transactions
     useEffect(() => {
-        if (!token) return;
+        if (!authChecked) return;
+
+        // Guest mode: no token, show empty states
+        if (!token) {
+            setLoading(false);
+            setTransactions([]);
+            return;
+        }
 
         const fetchTransactions = async () => {
             setLoading(true);
@@ -144,7 +147,7 @@ export default function TransactionsPage() {
         };
 
         fetchTransactions();
-    }, [token, refreshTrigger]);
+    }, [token, authChecked, refreshTrigger]);
 
     // Scroll detection
     const handleScroll = () => {
@@ -335,9 +338,9 @@ export default function TransactionsPage() {
 
     if (!authChecked || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
                     <p className="mt-4 text-gray-600">Loading...</p>
                 </div>
             </div>
@@ -346,7 +349,7 @@ export default function TransactionsPage() {
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
                     <p className="text-red-600">{error}</p>
                 </div>
@@ -355,7 +358,7 @@ export default function TransactionsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 pb-20 sm:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 sm:pb-0">
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -363,7 +366,7 @@ export default function TransactionsPage() {
                         {/* Desktop Back Button - Hidden on Mobile */}
                         <button
                             onClick={() => router.push('/dashboard')}
-                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
                             aria-label="Back to Dashboard"
                         >
                             <FiArrowLeft className="w-4 h-4" />
@@ -371,10 +374,10 @@ export default function TransactionsPage() {
                         </button>
                         {/* Mobile: Show icon + title */}
                         <div className="flex sm:hidden items-center space-x-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                                 <FiList className="w-5 h-5 text-white" />
                             </div>
-                            <h1 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-lg font-bold text-slate-800">
                                 Transactions
                             </h1>
                         </div>
@@ -389,8 +392,8 @@ export default function TransactionsPage() {
                         onClick={() => setQuickFilter('all')}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             quickFilter === 'all'
-                                ? 'bg-indigo-600 text-white shadow-md'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:border-indigo-300'
+                                ? 'bg-emerald-600 text-white shadow-md'
+                                : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-300'
                         }`}
                     >
                         All
@@ -419,8 +422,8 @@ export default function TransactionsPage() {
                         onClick={() => setQuickFilter('this_month')}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             quickFilter === 'this_month'
-                                ? 'bg-purple-600 text-white shadow-md'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:border-purple-300'
+                                ? 'bg-emerald-600 text-white shadow-md'
+                                : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-300'
                         }`}
                     >
                         This Month
@@ -429,8 +432,8 @@ export default function TransactionsPage() {
                         onClick={() => setQuickFilter('last_month')}
                         className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                             quickFilter === 'last_month'
-                                ? 'bg-blue-600 text-white shadow-md'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-300'
+                                ? 'bg-emerald-600 text-white shadow-md'
+                                : 'bg-white text-gray-700 border border-gray-300 hover:border-emerald-300'
                         }`}
                     >
                         Last Month
@@ -447,7 +450,7 @@ export default function TransactionsPage() {
                                 placeholder="Search transactions..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full pl-3 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
+                                className="w-full pl-3 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
                             />
                         </div>
 
@@ -455,7 +458,7 @@ export default function TransactionsPage() {
                         <select
                             value={sortOrder}
                             onChange={e => setSortOrder(e.target.value as 'date_desc' | 'date_asc')}
-                            className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 font-medium text-sm"
+                            className="px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 font-medium text-sm"
                         >
                             <option value="date_desc">Newest First</option>
                             <option value="date_asc">Oldest First</option>
@@ -474,7 +477,9 @@ export default function TransactionsPage() {
                     {filteredTransactions.length === 0 ? (
                         <div className="text-center py-12">
                             <p className="text-gray-500 font-medium">No transactions found</p>
-                            <p className="text-sm text-gray-400 mt-1">Try adjusting your filters or add a new transaction</p>
+                            <p className="text-sm text-gray-400 mt-1">
+                                {!token ? 'Sign in to view and manage your transactions' : 'Try adjusting your filters or add a new transaction'}
+                            </p>
                         </div>
                     ) : (
                         <div
@@ -490,7 +495,7 @@ export default function TransactionsPage() {
                                         <div
                                             key={tx.id}
                                             data-transaction-date={tx.date}
-                                            className="group sm:px-4 sm:py-3 bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-colors"
+                                            className="group sm:px-4 sm:py-3 bg-white hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-colors"
                                         >
                                             {/* Mobile Layout with Long Press */}
                                             <div className="sm:hidden">
@@ -508,7 +513,7 @@ export default function TransactionsPage() {
                                                                 {tx.description ? decodeHtmlEntities(tx.description) : 'No description'}
                                                             </h4>
                                                             <div className="flex items-center gap-1.5 flex-wrap">
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-100 text-indigo-700">
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-700">
                                                                     {decodeHtmlEntities(tx.category)}
                                                                 </span>
                                                                 <span className="text-[10px] text-gray-500">
@@ -532,7 +537,7 @@ export default function TransactionsPage() {
                                                         </h4>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-700">
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-100 text-emerald-700">
                                                             {decodeHtmlEntities(tx.category)}
                                                         </span>
                                                         <span className="text-xs text-gray-500">
@@ -550,7 +555,7 @@ export default function TransactionsPage() {
                                                 <div className="flex-shrink-0 flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                     <button
                                                         onClick={() => handleEdit(tx.id)}
-                                                        className="p-2 rounded-lg text-indigo-600 hover:bg-indigo-100 transition-all duration-150"
+                                                        className="p-2 rounded-lg text-emerald-600 hover:bg-emerald-100 transition-all duration-150"
                                                         title="Edit transaction"
                                                     >
                                                         <FiEdit2 className="w-4 h-4" />
@@ -577,7 +582,7 @@ export default function TransactionsPage() {
             {showScrollTop && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 p-3 bg-white border-2 border-indigo-200 text-indigo-600 rounded-full shadow-xl hover:bg-indigo-50 hover:border-indigo-300 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
+                    className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 p-3 bg-white border-2 border-emerald-200 text-emerald-600 rounded-full shadow-xl hover:bg-emerald-50 hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
                     aria-label="Scroll to top"
                 >
                     <FiArrowUp className="w-5 h-5" />
@@ -586,8 +591,14 @@ export default function TransactionsPage() {
 
             {/* FAB - Mobile Only */}
             <button
-                onClick={() => setShowTransactionModal(true)}
-                className="sm:hidden fixed bottom-20 right-4 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95 hover:shadow-indigo-500/50"
+                onClick={() => {
+                    if (!token) {
+                        router.push('/login');
+                        return;
+                    }
+                    setShowTransactionModal(true);
+                }}
+                className="sm:hidden fixed bottom-20 right-4 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95"
                 aria-label="Add Transaction"
             >
                 <FiPlus className="w-7 h-7 text-white" />
@@ -595,8 +606,14 @@ export default function TransactionsPage() {
 
             {/* FAB - Desktop Only */}
             <button
-                onClick={() => setShowTransactionModal(true)}
-                className="hidden sm:flex fixed bottom-6 right-6 p-5 rounded-full shadow-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 items-center justify-center"
+                onClick={() => {
+                    if (!token) {
+                        router.push('/login');
+                        return;
+                    }
+                    setShowTransactionModal(true);
+                }}
+                className="hidden sm:flex fixed bottom-6 right-6 p-5 rounded-full shadow-2xl bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 items-center justify-center"
             >
                 <FiPlus size={28} />
             </button>
@@ -606,7 +623,7 @@ export default function TransactionsPage() {
                 <div className="grid grid-cols-4 h-16">
                     <button
                         onClick={() => router.push('/dashboard')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Dashboard"
                     >
                         <FiHome className="w-5 h-5" />
@@ -615,7 +632,7 @@ export default function TransactionsPage() {
 
                     <button
                         onClick={() => router.push('/transactions')}
-                        className="flex flex-col items-center justify-center gap-1 text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-emerald-600 transition-colors"
                         aria-label="Transactions"
                     >
                         <FiList className="w-5 h-5" />
@@ -624,7 +641,7 @@ export default function TransactionsPage() {
 
                     <button
                         onClick={() => router.push('/recurring')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Recurring"
                     >
                         <FiRepeat className="w-5 h-5" />
@@ -633,7 +650,7 @@ export default function TransactionsPage() {
 
                     <button
                         onClick={() => router.push('/budgets')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Budgets"
                     >
                         <FiDollarSign className="w-5 h-5" />
@@ -664,8 +681,8 @@ export default function TransactionsPage() {
                                     }}
                                     className="w-full flex items-center gap-3 px-4 py-4 text-left hover:bg-gray-50 rounded-xl transition-colors"
                                 >
-                                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                        <FiEdit2 className="w-5 h-5 text-indigo-600" />
+                                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                                        <FiEdit2 className="w-5 h-5 text-emerald-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="font-semibold text-gray-900">Edit Transaction</p>
@@ -721,7 +738,7 @@ export default function TransactionsPage() {
                             </div>
 
                             {/* Amount - Large Display */}
-                            <div className="text-center mb-6 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl">
+                            <div className="text-center mb-6 p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl">
                                 <p className="text-sm text-gray-600 mb-2">Amount</p>
                                 <p className={`text-4xl font-bold ${showDetails.category_type === 'expense' ? 'text-red-600' : 'text-green-600'}`}>
                                     {showDetails.category_type === 'expense' ? '-' : '+'}{formatCurrency(Math.abs(showDetails.amount))}
@@ -822,7 +839,7 @@ export default function TransactionsPage() {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
                     <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
                         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
-                            <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h2 className="text-xl font-bold text-slate-800">
                                 {editingTransaction ? 'Edit Transaction' : 'Add Transaction'}
                             </h2>
                             <button

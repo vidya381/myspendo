@@ -292,7 +292,7 @@ export default function TransactionForm({
                         }}
                         disabled={loadingSubmit || loadingCategories}
                         maxLength={100}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
                         autoComplete="off"
                         placeholder="Type or select a category"
                         ref={categoryInputRef}
@@ -309,13 +309,13 @@ export default function TransactionForm({
                                     key={cat.id}
                                     type="button"
                                     onClick={() => handleCategorySelect(cat)}
-                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-150 border-b border-gray-100 last:border-b-0 group"
+                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-150 border-b border-gray-100 last:border-b-0 group"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className={`w-2 h-2 rounded-full ${
                                             cat.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'
                                         }`} />
-                                        <span className="text-gray-900 font-medium group-hover:text-indigo-700 transition-colors">
+                                        <span className="text-gray-900 font-medium group-hover:text-emerald-700 transition-colors">
                                             {cat.name}
                                         </span>
                                     </div>
@@ -337,7 +337,7 @@ export default function TransactionForm({
             </div>
 
             {showCategoryTypeInput && (
-                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-100 rounded-xl p-4">
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-100 rounded-xl p-4">
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
                         💡 New Category Type <span className="text-rose-500">*</span>
                     </label>
@@ -389,7 +389,7 @@ export default function TransactionForm({
                         value={amount}
                         onChange={e => setAmount(e.target.value)}
                         disabled={loadingSubmit}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
                         placeholder="0.00"
                         required
                     />
@@ -413,7 +413,7 @@ export default function TransactionForm({
                         onChange={(e) => setDescription(e.target.value)}
                         disabled={loadingSubmit}
                         maxLength={500}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900 placeholder:text-gray-400"
                         placeholder="Add a description"
                     />
                 </div>
@@ -436,7 +436,7 @@ export default function TransactionForm({
                         onChange={(e) => setDate(e.target.value)}
                         max={new Date().toISOString().split('T')[0]}
                         disabled={loadingSubmit}
-                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 disabled:bg-gray-50 disabled:cursor-not-allowed bg-white text-gray-900"
                         required
                     />
                 </div>
@@ -448,8 +448,8 @@ export default function TransactionForm({
                     disabled={loadingSubmit || loadingCategories}
                     className={`flex-1 py-3.5 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform ${
                         loadingSubmit || loadingCategories
-                            ? "bg-indigo-400 cursor-not-allowed"
-                            : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                            ? "bg-emerald-400 cursor-not-allowed"
+                            : "bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shadow-lg hover:shadow-xl active:scale-[0.98]"
                     }`}
                 >
                     {loadingSubmit ? (

@@ -298,9 +298,9 @@ export default function BudgetsPage() {
 
     if (!authChecked || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent mb-4"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading budgets...</p>
                 </div>
             </div>
@@ -308,7 +308,7 @@ export default function BudgetsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 pb-20 sm:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 sm:pb-0">
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -316,7 +316,7 @@ export default function BudgetsPage() {
                         {/* Desktop Back Button - Hidden on Mobile */}
                         <button
                             onClick={() => router.push('/dashboard')}
-                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
                             aria-label="Back to Dashboard"
                         >
                             <FiArrowLeft className="w-4 h-4" />
@@ -324,10 +324,10 @@ export default function BudgetsPage() {
                         </button>
                         {/* Mobile: Show icon + title */}
                         <div className="flex sm:hidden items-center space-x-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                                 <FiDollarSign className="w-5 h-5 text-white" />
                             </div>
-                            <h1 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                            <h1 className="text-lg font-bold text-slate-800">
                                 Budgets
                             </h1>
                         </div>
@@ -352,10 +352,10 @@ export default function BudgetsPage() {
                         <p className="text-gray-500 mb-6">Create your first budget to start tracking your spending</p>
                         <button
                             onClick={openAddModal}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             <FiPlus className="w-5 h-5" />
-                            Add Your First Budget
+                            Add Budget
                         </button>
                     </div>
                 ) : (
@@ -506,7 +506,7 @@ export default function BudgetsPage() {
                 {/* Floating Add Button */}
                 <button
                     onClick={openAddModal}
-                    className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 p-4 sm:p-5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-200 transform hover:scale-110 z-50 group"
+                    className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 p-4 sm:p-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-200 transform hover:scale-110 z-50 group"
                     aria-label="Add new budget"
                 >
                     <FiPlus className="w-6 h-6" />
@@ -543,7 +543,7 @@ export default function BudgetsPage() {
                                             onChange={(e) => setCategoryId(Number(e.target.value))}
                                             required
                                             disabled={loadingSubmit}
-                                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-900 font-medium text-base"
+                                            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-900 font-medium text-base"
                                         >
                                             <option value={0}>Overall Budget</option>
                                             {categories.map((cat) => (
@@ -571,7 +571,7 @@ export default function BudgetsPage() {
                                                 disabled={loadingSubmit}
                                                 className={`px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
                                                     period === 'monthly'
-                                                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg'
+                                                        ? 'bg-emerald-600 text-white shadow-lg'
                                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                 } disabled:opacity-50 disabled:cursor-not-allowed`}
                                             >
@@ -583,7 +583,7 @@ export default function BudgetsPage() {
                                                 disabled={loadingSubmit}
                                                 className={`px-4 py-3 rounded-xl font-semibold transition-all duration-200 ${
                                                     period === 'yearly'
-                                                        ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
+                                                        ? 'bg-emerald-600 text-white shadow-lg'
                                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                 } disabled:opacity-50 disabled:cursor-not-allowed`}
                                             >
@@ -610,7 +610,7 @@ export default function BudgetsPage() {
                                             onChange={(e) => setAmount(e.target.value)}
                                             required
                                             disabled={loadingSubmit}
-                                            className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-900 font-medium text-base"
+                                            className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all disabled:bg-gray-50 disabled:cursor-not-allowed text-gray-900 font-medium text-base"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -619,7 +619,7 @@ export default function BudgetsPage() {
                                 {/* Alert Threshold */}
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-900 mb-3">
-                                        ⚠️ Alert Threshold: <span className="text-indigo-600 font-bold text-lg">{alertThreshold}%</span> <span className="text-rose-500">*</span>
+                                        ⚠️ Alert Threshold: <span className="text-emerald-600 font-bold text-lg">{alertThreshold}%</span> <span className="text-rose-500">*</span>
                                     </label>
                                     <input
                                         type="range"
@@ -629,14 +629,14 @@ export default function BudgetsPage() {
                                         value={alertThreshold}
                                         onChange={(e) => setAlertThreshold(Number(e.target.value))}
                                         disabled={loadingSubmit}
-                                        className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed accent-indigo-600"
+                                        className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed accent-emerald-600"
                                     />
                                     <div className="flex justify-between text-xs font-medium text-gray-600 mt-2">
                                         <span>0%</span>
                                         <span>50%</span>
                                         <span>100%</span>
                                     </div>
-                                    <p className="mt-2 text-sm text-gray-700 bg-indigo-50 border border-indigo-200 rounded-lg p-2">
+                                    <p className="mt-2 text-sm text-gray-700 bg-emerald-50 border border-emerald-200 rounded-lg p-2">
                                         💡 You'll receive an alert when spending reaches this percentage
                                     </p>
                                 </div>
@@ -646,7 +646,7 @@ export default function BudgetsPage() {
                                     <button
                                         type="submit"
                                         disabled={loadingSubmit}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {loadingSubmit ? 'Saving...' : editingBudget ? 'Update Budget' : 'Create Budget'}
                                     </button>
@@ -684,8 +684,8 @@ export default function BudgetsPage() {
                                         }}
                                         className="w-full flex items-center gap-3 px-4 py-4 text-left hover:bg-gray-50 rounded-xl transition-colors"
                                     >
-                                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                            <FiEdit2 className="w-5 h-5 text-indigo-600" />
+                                        <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                                            <FiEdit2 className="w-5 h-5 text-emerald-600" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="font-semibold text-gray-900">Edit Budget</p>
@@ -871,7 +871,7 @@ export default function BudgetsPage() {
                     {/* Dashboard */}
                     <button
                         onClick={() => router.push('/dashboard')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Dashboard"
                     >
                         <FiHome className="w-5 h-5" />
@@ -881,7 +881,7 @@ export default function BudgetsPage() {
                     {/* Transactions */}
                     <button
                         onClick={() => router.push('/transactions')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Transactions"
                     >
                         <FiList className="w-5 h-5" />
@@ -891,7 +891,7 @@ export default function BudgetsPage() {
                     {/* Recurring */}
                     <button
                         onClick={() => router.push('/recurring')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Recurring"
                     >
                         <FiRepeat className="w-5 h-5" />
@@ -901,7 +901,7 @@ export default function BudgetsPage() {
                     {/* Budgets */}
                     <button
                         onClick={() => router.push('/budgets')}
-                        className="flex flex-col items-center justify-center gap-1 text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-emerald-600 transition-colors"
                         aria-label="Budgets"
                     >
                         <FiDollarSign className="w-5 h-5" />

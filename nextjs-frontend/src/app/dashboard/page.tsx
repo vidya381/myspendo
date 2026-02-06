@@ -762,9 +762,9 @@ export default function Dashboard() {
     // Show loading screen until auth check done or data loading
     if (!authChecked || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent mb-4"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading your dashboard...</p>
                 </div>
             </div>
@@ -773,7 +773,7 @@ export default function Dashboard() {
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
                 <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl p-8 max-w-md w-full border border-white/20">
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
@@ -785,7 +785,7 @@ export default function Dashboard() {
                         <p className="text-red-600 mb-6">{error}</p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             Try Again
                         </button>
@@ -796,7 +796,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <div className="min-h-screen bg-slate-50">
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -805,10 +805,10 @@ export default function Dashboard() {
                             onClick={() => router.push('/dashboard')}
                             className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
                         >
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                                 <FiDollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                             </div>
-                            <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-lg sm:text-2xl font-bold text-slate-800">
                                 <span className="hidden sm:inline">MySpendo</span>
                                 <span className="sm:hidden">MySpendo</span>
                             </h1>
@@ -817,7 +817,7 @@ export default function Dashboard() {
                         <div className="hidden sm:flex items-center gap-2 sm:gap-3">
                             <button
                                 onClick={() => router.push('/recurring')}
-                                className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1 sm:gap-2"
+                                className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1 sm:gap-2"
                                 aria-label="Recurring"
                             >
                                 <FiRepeat className="w-4 h-4" />
@@ -825,7 +825,7 @@ export default function Dashboard() {
                             </button>
                             <button
                                 onClick={() => router.push('/budgets')}
-                                className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1 sm:gap-2 relative"
+                                className="px-3 sm:px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-1 sm:gap-2 relative"
                                 aria-label="Budgets"
                             >
                                 <FiDollarSign className="w-4 h-4" />
@@ -839,7 +839,7 @@ export default function Dashboard() {
                             {token ? (
                                 <button
                                     onClick={logout}
-                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors duration-200"
                                     aria-label="Logout"
                                 >
                                     <FiLogOut className="w-4 h-4" />
@@ -848,7 +848,7 @@ export default function Dashboard() {
                             ) : (
                                 <button
                                     onClick={() => router.push('/login')}
-                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all"
+                                    className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-md hover:shadow-lg"
                                     aria-label="Sign In"
                                 >
                                     <FiLogIn className="w-4 h-4" />
@@ -861,7 +861,7 @@ export default function Dashboard() {
                             {token ? (
                                 <button
                                     onClick={logout}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors duration-200"
                                     aria-label="Logout"
                                 >
                                     <FiLogOut className="w-4 h-4" />
@@ -869,7 +869,7 @@ export default function Dashboard() {
                             ) : (
                                 <button
                                     onClick={() => router.push('/login')}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors duration-200"
                                     aria-label="Sign In"
                                 >
                                     <FiLogIn className="w-4 h-4" />
@@ -889,24 +889,24 @@ export default function Dashboard() {
                             icon={<FiTrendingUp size={32} />}
                             label="This Month Expenses"
                             value={formatCurrency(summary?.total_expenses || 0)}
-                            gradient="from-red-500 to-pink-500"
-                            bgGradient="from-red-50 to-pink-50"
+                            gradient="from-rose-600 to-rose-500"
+                            bgGradient="from-rose-50 to-rose-100"
                             {...(token && { onClick: () => openHistoricalModal('expenses') })}
                         />
                         <Card
                             icon={<FiDollarSign size={32} />}
                             label="This Month Income"
                             value={formatCurrency(summary?.total_income || 0)}
-                            gradient="from-green-500 to-emerald-500"
-                            bgGradient="from-green-50 to-emerald-50"
+                            gradient="from-emerald-600 to-emerald-500"
+                            bgGradient="from-emerald-50 to-emerald-100"
                             {...(token && { onClick: () => openHistoricalModal('income') })}
                         />
                         <Card
                             icon={<FiRepeat size={32} />}
                             label="Monthly Recurring"
                             value={formatCurrency(summary?.recurring_expenses || 0)}
-                            gradient="from-orange-500 to-amber-500"
-                            bgGradient="from-orange-50 to-amber-50"
+                            gradient="from-amber-600 to-amber-500"
+                            bgGradient="from-amber-50 to-amber-100"
                         />
                     </div>
 
@@ -927,8 +927,8 @@ export default function Dashboard() {
                                         icon={<FiTrendingUp size={32} />}
                                         label="This Month Expenses"
                                         value={formatCurrency(summary?.total_expenses || 0)}
-                                        gradient="from-red-500 to-pink-500"
-                                        bgGradient="from-red-50 to-pink-50"
+                                        gradient="from-rose-600 to-rose-500"
+                                        bgGradient="from-rose-50 to-rose-100"
                                         {...(token && { onClick: () => openHistoricalModal('expenses') })}
                                     />
                                 </div>
@@ -937,8 +937,8 @@ export default function Dashboard() {
                                         icon={<FiDollarSign size={32} />}
                                         label="This Month Income"
                                         value={formatCurrency(summary?.total_income || 0)}
-                                        gradient="from-green-500 to-emerald-50"
-                                        bgGradient="from-green-50 to-emerald-50"
+                                        gradient="from-emerald-600 to-emerald-500"
+                                        bgGradient="from-emerald-50 to-emerald-100"
                                         {...(token && { onClick: () => openHistoricalModal('income') })}
                                     />
                                 </div>
@@ -946,9 +946,9 @@ export default function Dashboard() {
                                     <Card
                                         icon={<FiRepeat size={32} />}
                                         label="Monthly Recurring"
-                                        value={formatCurrency(summary?.recurring_expenses || 0)}
-                                        gradient="from-orange-500 to-amber-500"
-                                        bgGradient="from-orange-50 to-amber-50"
+                                        value={formatCurrency(summary?.total_income || 0)}
+                                        gradient="from-amber-600 to-amber-500"
+                                        bgGradient="from-amber-50 to-amber-100"
                                     />
                                 </div>
                             </div>
@@ -962,7 +962,7 @@ export default function Dashboard() {
                                     onClick={() => setActiveCardIndex(index)}
                                     className={`h-2 rounded-full transition-all duration-300 ${
                                         activeCardIndex === index
-                                            ? 'w-8 bg-indigo-600'
+                                            ? 'w-8 bg-emerald-600'
                                             : 'w-2 bg-gray-300'
                                     }`}
                                     aria-label={`Go to card ${index + 1}`}
@@ -1026,12 +1026,12 @@ export default function Dashboard() {
 
                                         // Color palette for different categories
                                         const colors = [
-                                            { gradient: 'from-indigo-500 to-purple-600', bg: 'from-indigo-50 to-purple-50', border: 'border-indigo-200' },
+                                            { gradient: 'from-emerald-500 to-teal-600', bg: 'from-emerald-50 to-teal-50', border: 'border-emerald-200' },
                                             { gradient: 'from-pink-500 to-rose-600', bg: 'from-pink-50 to-rose-50', border: 'border-pink-200' },
                                             { gradient: 'from-blue-500 to-cyan-600', bg: 'from-blue-50 to-cyan-50', border: 'border-blue-200' },
-                                            { gradient: 'from-emerald-500 to-teal-600', bg: 'from-emerald-50 to-teal-50', border: 'border-emerald-200' },
+                                            { gradient: 'from-teal-500 to-cyan-600', bg: 'from-teal-50 to-cyan-50', border: 'border-teal-200' },
                                             { gradient: 'from-amber-500 to-orange-600', bg: 'from-amber-50 to-orange-50', border: 'border-amber-200' },
-                                            { gradient: 'from-violet-500 to-purple-600', bg: 'from-violet-50 to-purple-50', border: 'border-violet-200' },
+                                            { gradient: 'from-slate-500 to-gray-600', bg: 'from-slate-50 to-gray-50', border: 'border-slate-200' },
                                         ];
                                         const color = colors[index % colors.length];
 
@@ -1208,7 +1208,7 @@ export default function Dashboard() {
                                 </div>
                                 <button
                                     onClick={() => router.push('/budgets')}
-                                    className="px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-all duration-200 border border-indigo-200"
+                                    className="px-4 py-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-all duration-200 border border-emerald-200"
                                 >
                                     View All →
                                 </button>
@@ -1293,7 +1293,7 @@ export default function Dashboard() {
                                     placeholder="Filter by category"
                                     value={filterCategory}
                                     onChange={e => setFilterCategory(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
+                                    className="w-full pl-10 pr-4 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
                                 />
                             </div>
 
@@ -1308,16 +1308,16 @@ export default function Dashboard() {
                                             handleJumpToDate();
                                         }
                                     }}
-                                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 text-sm"
+                                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 text-sm"
                                     placeholder="Jump to date"
                                 />
                                 {jumpToDate && (
                                     <button
                                         onClick={handleJumpToDate}
-                                        className="absolute inset-y-0 right-2 flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
+                                        className="absolute inset-y-0 right-2 flex items-center text-emerald-600 hover:text-emerald-800 transition-colors"
                                         title="Jump to date (or press Enter)"
                                     >
-                                        <div className="p-1 rounded-md hover:bg-indigo-100 transition-all">
+                                        <div className="p-1 rounded-md hover:bg-emerald-100 transition-all">
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                             </svg>
@@ -1336,7 +1336,7 @@ export default function Dashboard() {
                                     placeholder="Min"
                                     value={minAmount}
                                     onChange={e => setMinAmount(e.target.value)}
-                                    className="w-full pl-6 sm:pl-8 pr-2 sm:pr-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
+                                    className="w-full pl-6 sm:pl-8 pr-2 sm:pr-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
                                     step="0.01"
                                     min="0"
                                 />
@@ -1351,7 +1351,7 @@ export default function Dashboard() {
                                     placeholder="Max"
                                     value={maxAmount}
                                     onChange={e => setMaxAmount(e.target.value)}
-                                    className="w-full pl-6 sm:pl-8 pr-2 sm:pr-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
+                                    className="w-full pl-6 sm:pl-8 pr-2 sm:pr-3 py-1.5 sm:py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 placeholder:text-gray-400 text-sm"
                                     step="0.01"
                                     min="0"
                                 />
@@ -1363,7 +1363,7 @@ export default function Dashboard() {
                             <select
                                 value={sortOrder}
                                 onChange={e => setSortOrder(e.target.value as 'date_desc' | 'date_asc')}
-                                className="px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 font-medium text-sm"
+                                className="px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 font-medium text-sm"
                             >
                                 <option value="date_desc">Newest First</option>
                                 <option value="date_asc">Oldest First</option>
@@ -1400,7 +1400,7 @@ export default function Dashboard() {
                                                 className={`group relative px-2 sm:px-4 py-1.5 sm:py-3 transition-all duration-1000 ease-in-out ${
                                                     highlightedTransactionId === tx.id
                                                         ? 'bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-50 border-l-4 border-yellow-500'
-                                                        : 'bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50'
+                                                        : 'bg-white hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50'
                                                 }`}
                                             >
                                                 {/* Updated Checkmark on Border */}
@@ -1416,7 +1416,7 @@ export default function Dashboard() {
                                                 <div className="hidden sm:flex items-center gap-3">
                                                     {/* Compact Date Badge */}
                                                     <div className="flex-shrink-0">
-                                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-col items-center justify-center text-white shadow-sm">
+                                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex flex-col items-center justify-center text-white shadow-sm">
                                                             <span className="text-[10px] font-semibold uppercase leading-none">
                                                                 {formatCalendarDate(tx.date, 'month')}
                                                             </span>
@@ -1434,7 +1434,7 @@ export default function Dashboard() {
                                                             </h4>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-700">
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-100 text-emerald-700">
                                                                 {decodeHtmlEntities(tx.category)}
                                                             </span>
                                                             <span className="text-xs text-gray-500">
@@ -1454,7 +1454,7 @@ export default function Dashboard() {
                                                     <div className="flex-shrink-0 flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                                         <button
                                                             onClick={() => handleEdit(tx.id)}
-                                                            className="p-2 rounded-lg text-indigo-600 hover:bg-indigo-100 transition-all duration-150"
+                                                            className="p-2 rounded-lg text-emerald-600 hover:bg-emerald-100 transition-all duration-150"
                                                             title="Edit transaction"
                                                         >
                                                             <FiEdit2 className="w-4 h-4" />
@@ -1477,7 +1477,7 @@ export default function Dashboard() {
                                                                 {tx.description ? decodeHtmlEntities(tx.description) : 'No description'}
                                                             </h4>
                                                             <div className="flex items-center gap-1.5 flex-wrap">
-                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-100 text-indigo-700">
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-700">
                                                                     {decodeHtmlEntities(tx.category)}
                                                                 </span>
                                                                 <span className="text-[10px] text-gray-500">
@@ -1492,7 +1492,7 @@ export default function Dashboard() {
                                                     <div className="flex items-center gap-1.5">
                                                         <button
                                                             onClick={() => handleEdit(tx.id)}
-                                                            className="flex-1 px-2 py-1 rounded-lg text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-150"
+                                                            className="flex-1 px-2 py-1 rounded-lg text-xs font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-all duration-150"
                                                         >
                                                             Edit
                                                         </button>
@@ -1659,7 +1659,7 @@ export default function Dashboard() {
             {showScrollTop && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 p-3 bg-white border-2 border-indigo-200 text-indigo-600 rounded-full shadow-xl hover:bg-indigo-50 hover:border-indigo-300 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
+                    className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 p-3 bg-white border-2 border-emerald-200 text-emerald-600 rounded-full shadow-xl hover:bg-emerald-50 hover:border-emerald-300 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 z-40 animate-fade-in"
                     aria-label="Scroll to top"
                 >
                     <FiArrowUp className="w-5 h-5" />
@@ -1677,7 +1677,7 @@ export default function Dashboard() {
                     }
                 }}
                 aria-label="Add transaction"
-                className="hidden sm:flex fixed bottom-6 right-6 p-5 rounded-full shadow-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 items-center justify-center"
+                className="hidden sm:flex fixed bottom-6 right-6 p-5 rounded-full shadow-2xl bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50 items-center justify-center"
             >
                 <FiPlus size={28} />
             </button>
@@ -1762,7 +1762,7 @@ export default function Dashboard() {
                     <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
                         {/* Modal Header */}
                         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
-                            <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h2 className="text-xl font-bold text-slate-800">
                                 {editingTransaction ? 'Edit Transaction' : 'Add Transaction'}
                             </h2>
                             <button
@@ -1822,7 +1822,7 @@ export default function Dashboard() {
                         setShowTransactionModal(true);
                     }
                 }}
-                className="sm:hidden fixed bottom-20 right-4 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95 hover:shadow-indigo-500/50"
+                className="sm:hidden fixed bottom-20 right-4 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 rounded-full shadow-2xl flex items-center justify-center z-50 transition-all duration-300 active:scale-95 hover:shadow-emerald-500/50"
                 aria-label="Add Transaction"
             >
                 <FiPlus className="w-7 h-7 text-white" />
@@ -1834,7 +1834,7 @@ export default function Dashboard() {
                     {/* Dashboard */}
                     <button
                         onClick={() => router.push('/dashboard')}
-                        className="flex flex-col items-center justify-center gap-1 text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-emerald-600 transition-colors"
                         aria-label="Dashboard"
                     >
                         <FiHome className="w-5 h-5" />
@@ -1844,7 +1844,7 @@ export default function Dashboard() {
                     {/* Transactions */}
                     <button
                         onClick={() => router.push('/transactions')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Transactions"
                     >
                         <FiList className="w-5 h-5" />
@@ -1854,7 +1854,7 @@ export default function Dashboard() {
                     {/* Recurring */}
                     <button
                         onClick={() => router.push('/recurring')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Recurring"
                     >
                         <FiRepeat className="w-5 h-5" />
@@ -1864,7 +1864,7 @@ export default function Dashboard() {
                     {/* Budgets */}
                     <button
                         onClick={() => router.push('/budgets')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors relative"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors relative"
                         aria-label="Budgets"
                     >
                         <FiDollarSign className="w-5 h-5" />

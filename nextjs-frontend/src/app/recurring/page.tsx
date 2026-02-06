@@ -394,9 +394,9 @@ export default function RecurringTransactionsPage() {
 
     if (!authChecked || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent mb-4"></div>
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading...</p>
                 </div>
             </div>
@@ -404,7 +404,7 @@ export default function RecurringTransactionsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 pb-20 sm:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 sm:pb-0">
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -412,7 +412,7 @@ export default function RecurringTransactionsPage() {
                         {/* Desktop Back Button - Hidden on Mobile */}
                         <button
                             onClick={() => router.push('/dashboard')}
-                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
                             aria-label="Back to Dashboard"
                         >
                             <FiArrowLeft className="w-4 h-4" />
@@ -420,10 +420,10 @@ export default function RecurringTransactionsPage() {
                         </button>
                         {/* Mobile: Show icon + title */}
                         <div className="flex sm:hidden items-center space-x-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                                 <FiRepeat className="w-5 h-5 text-white" />
                             </div>
-                            <h1 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-lg font-bold text-slate-800">
                                 Recurring
                             </h1>
                         </div>
@@ -440,17 +440,17 @@ export default function RecurringTransactionsPage() {
 
                 {recurring.length === 0 ? (
                     <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl border border-white/20 p-8 sm:p-16 text-center">
-                        <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <FiRepeat className="w-10 h-10 text-indigo-600" />
+                        <div className="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <FiRepeat className="w-10 h-10 text-emerald-600" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">No recurring transactions yet</h3>
                         <p className="text-gray-500 mb-6">Set up automatic transactions for bills, subscriptions, or regular income</p>
                         <button
                             onClick={handleOpenModal}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                         >
                             <FiPlus className="w-5 h-5" />
-                            Add Your First Recurring Transaction
+                            Add Transaction
                         </button>
                     </div>
                 ) : (
@@ -463,7 +463,7 @@ export default function RecurringTransactionsPage() {
                             const frequencyConfig = {
                                 daily: { bg: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700', gradient: 'from-slate-500 to-gray-600', icon: '📅' },
                                 weekly: { bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700', gradient: 'from-cyan-500 to-blue-600', icon: '📆' },
-                                monthly: { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-700', gradient: 'from-indigo-500 to-purple-600', icon: '🗓️' },
+                                monthly: { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', gradient: 'from-emerald-500 to-teal-600', icon: '🗓️' },
                                 yearly: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', gradient: 'from-amber-500 to-orange-600', icon: '📊' }
                             };
                             const config = frequencyConfig[rec.recurrence as keyof typeof frequencyConfig] || frequencyConfig.monthly;
@@ -489,9 +489,8 @@ export default function RecurringTransactionsPage() {
                                                     <span className={`text-[10px] px-1.5 py-0.5 bg-white rounded-full ${config.text} font-semibold capitalize`}>
                                                         {config.icon} {rec.recurrence}
                                                     </span>
-                                                    <span className={`text-[10px] px-1.5 py-0.5 bg-white rounded-full font-semibold ${
-                                                        isIncome ? 'text-emerald-700' : 'text-gray-700'
-                                                    }`}>
+                                                    <span className={`text-[10px] px-1.5 py-0.5 bg-white rounded-full font-semibold ${isIncome ? 'text-emerald-700' : 'text-gray-700'
+                                                        }`}>
                                                         {category?.name || 'Unknown'}
                                                     </span>
                                                 </div>
@@ -517,9 +516,8 @@ export default function RecurringTransactionsPage() {
                                                     <span className={`text-xs px-2 py-1 bg-white rounded-full ${config.text} font-semibold capitalize`}>
                                                         {config.icon} {rec.recurrence}
                                                     </span>
-                                                    <span className={`text-xs px-2 py-1 bg-white rounded-full font-semibold ${
-                                                        isIncome ? 'text-emerald-700' : 'text-gray-700'
-                                                    }`}>
+                                                    <span className={`text-xs px-2 py-1 bg-white rounded-full font-semibold ${isIncome ? 'text-emerald-700' : 'text-gray-700'
+                                                        }`}>
                                                         {category?.name || 'Unknown'}
                                                     </span>
                                                 </div>
@@ -572,7 +570,7 @@ export default function RecurringTransactionsPage() {
             <button
                 onClick={handleOpenModal}
                 aria-label="Add recurring transaction"
-                className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 p-4 sm:p-5 rounded-full shadow-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50"
+                className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 p-4 sm:p-5 rounded-full shadow-2xl bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/50 transition-all duration-200 transform hover:scale-110 active:scale-95 z-50"
             >
                 <FiPlus size={28} />
             </button>
@@ -613,7 +611,7 @@ export default function RecurringTransactionsPage() {
                                                 setShowDropdown(true);
                                             }
                                         }}
-                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white text-gray-900 font-medium"
+                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-gray-900 font-medium"
                                         placeholder="Type or select a category"
                                         autoComplete="off"
                                     />
@@ -629,21 +627,19 @@ export default function RecurringTransactionsPage() {
                                                     key={cat.id}
                                                     type="button"
                                                     onClick={() => handleCategorySelect(cat)}
-                                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-150 border-b border-gray-100 last:border-b-0 group text-left"
+                                                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-150 border-b border-gray-100 last:border-b-0 group text-left"
                                                 >
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-2 h-2 rounded-full ${
-                                                            cat.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'
-                                                        }`} />
-                                                        <span className="text-gray-900 font-medium group-hover:text-indigo-700 transition-colors">
+                                                        <div className={`w-2 h-2 rounded-full ${cat.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'
+                                                            }`} />
+                                                        <span className="text-gray-900 font-medium group-hover:text-emerald-700 transition-colors">
                                                             {cat.name}
                                                         </span>
                                                     </div>
-                                                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                                        cat.type === 'income'
-                                                            ? 'bg-emerald-50 text-emerald-700'
-                                                            : 'bg-rose-50 text-rose-700'
-                                                    }`}>
+                                                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${cat.type === 'income'
+                                                        ? 'bg-emerald-50 text-emerald-700'
+                                                        : 'bg-rose-50 text-rose-700'
+                                                        }`}>
                                                         {cat.type === 'income' ? '💰 Income' : '💳 Expense'}
                                                     </span>
                                                 </button>
@@ -655,7 +651,7 @@ export default function RecurringTransactionsPage() {
 
                             {/* Category Type (for new categories) */}
                             {showCategoryTypeInput && (
-                                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-100 rounded-xl p-4">
+                                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-100 rounded-xl p-4">
                                     <label className="block text-sm font-semibold text-gray-700 mb-3">
                                         💡 New Category Type <span className="text-rose-500">*</span>
                                     </label>
@@ -664,22 +660,20 @@ export default function RecurringTransactionsPage() {
                                         <button
                                             type="button"
                                             onClick={() => setCategoryType('expense')}
-                                            className={`px-4 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
-                                                categoryType === 'expense'
-                                                    ? 'bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-lg scale-105'
-                                                    : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
-                                            }`}
+                                            className={`px-4 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${categoryType === 'expense'
+                                                ? 'bg-gradient-to-r from-rose-400 to-pink-400 text-white shadow-lg scale-105'
+                                                : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
+                                                }`}
                                         >
                                             <span>💳</span> Expense
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setCategoryType('income')}
-                                            className={`px-4 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
-                                                categoryType === 'income'
-                                                    ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-lg scale-105'
-                                                    : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
-                                            }`}
+                                            className={`px-4 py-3.5 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${categoryType === 'income'
+                                                ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-lg scale-105'
+                                                : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
+                                                }`}
                                         >
                                             <span>💰</span> Income
                                         </button>
@@ -701,7 +695,7 @@ export default function RecurringTransactionsPage() {
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         required
-                                        className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900 font-medium"
+                                        className="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-gray-900 font-medium"
                                         placeholder="0.00"
                                     />
                                 </div>
@@ -716,7 +710,7 @@ export default function RecurringTransactionsPage() {
                                     type="text"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900"
+                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-gray-900"
                                     placeholder="Optional description"
                                 />
                             </div>
@@ -731,7 +725,7 @@ export default function RecurringTransactionsPage() {
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-gray-900 font-medium"
+                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-gray-900 font-medium"
                                 />
                             </div>
 
@@ -746,11 +740,10 @@ export default function RecurringTransactionsPage() {
                                             key={freq}
                                             type="button"
                                             onClick={() => setRecurrence(freq)}
-                                            className={`px-4 py-3 rounded-xl font-semibold capitalize transition-all duration-200 ${
-                                                recurrence === freq
-                                                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                            }`}
+                                            className={`px-4 py-3 rounded-xl font-semibold capitalize transition-all duration-200 ${recurrence === freq
+                                                ? 'bg-emerald-600 text-white shadow-lg'
+                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                }`}
                                         >
                                             {freq}
                                         </button>
@@ -770,7 +763,7 @@ export default function RecurringTransactionsPage() {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="flex-1 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
+                                    className="flex-1 px-4 py-3 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50"
                                 >
                                     {submitting ? 'Saving...' : (editingId ? 'Update' : 'Add')}
                                 </button>
@@ -800,8 +793,8 @@ export default function RecurringTransactionsPage() {
                                     }}
                                     className="w-full flex items-center gap-3 px-4 py-4 text-left hover:bg-gray-50 rounded-xl transition-colors"
                                 >
-                                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                                        <FiEdit2 className="w-5 h-5 text-indigo-600" />
+                                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                                        <FiEdit2 className="w-5 h-5 text-emerald-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="font-semibold text-gray-900">Edit Recurring</p>
@@ -847,7 +840,7 @@ export default function RecurringTransactionsPage() {
                 const frequencyConfig = {
                     daily: { icon: '📅', color: 'slate' },
                     weekly: { icon: '📆', color: 'cyan' },
-                    monthly: { icon: '🗓️', color: 'indigo' },
+                    monthly: { icon: '🗓️', color: 'emerald' },
                     yearly: { icon: '📊', color: 'amber' }
                 };
                 const config = frequencyConfig[showDetails.recurrence as keyof typeof frequencyConfig] || frequencyConfig.monthly;
@@ -868,7 +861,7 @@ export default function RecurringTransactionsPage() {
                                 </div>
 
                                 {/* Amount Display */}
-                                <div className="text-center mb-6 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl">
+                                <div className="text-center mb-6 p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl">
                                     <p className="text-sm text-gray-600 mb-2">Amount</p>
                                     <p className={`text-4xl font-bold ${isIncome ? 'text-emerald-600' : 'text-gray-900'}`}>
                                         {isIncome && '+'}{!isIncome && ''}${showDetails.amount.toFixed(2)}
@@ -887,14 +880,12 @@ export default function RecurringTransactionsPage() {
                                     <div>
                                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Category</p>
                                         <div className="flex items-center gap-2">
-                                            <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium ${
-                                                isIncome ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                                            }`}>
+                                            <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium ${isIncome ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                                                }`}>
                                                 {category?.name || 'Unknown'}
                                             </span>
-                                            <span className={`text-xs px-2 py-1 rounded-full ${
-                                                isIncome ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-600'
-                                            }`}>
+                                            <span className={`text-xs px-2 py-1 rounded-full ${isIncome ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-600'
+                                                }`}>
                                                 {isIncome ? 'Income' : 'Expense'}
                                             </span>
                                         </div>
@@ -984,7 +975,7 @@ export default function RecurringTransactionsPage() {
                     {/* Dashboard */}
                     <button
                         onClick={() => router.push('/dashboard')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Dashboard"
                     >
                         <FiHome className="w-5 h-5" />
@@ -994,7 +985,7 @@ export default function RecurringTransactionsPage() {
                     {/* Transactions */}
                     <button
                         onClick={() => router.push('/transactions')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Transactions"
                     >
                         <FiList className="w-5 h-5" />
@@ -1004,7 +995,7 @@ export default function RecurringTransactionsPage() {
                     {/* Recurring */}
                     <button
                         onClick={() => router.push('/recurring')}
-                        className="flex flex-col items-center justify-center gap-1 text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-emerald-600 transition-colors"
                         aria-label="Recurring"
                     >
                         <FiRepeat className="w-5 h-5" />
@@ -1014,7 +1005,7 @@ export default function RecurringTransactionsPage() {
                     {/* Budgets */}
                     <button
                         onClick={() => router.push('/budgets')}
-                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-indigo-600 transition-colors"
+                        className="flex flex-col items-center justify-center gap-1 text-gray-600 hover:text-emerald-600 transition-colors"
                         aria-label="Budgets"
                     >
                         <FiDollarSign className="w-5 h-5" />
