@@ -143,7 +143,7 @@ export default function BudgetsPage() {
         if (!token) return;
         setLoading(true);
         try {
-            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
+            const response = await fetchWithAuth(`${"/api"}/budget/list`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -160,7 +160,7 @@ export default function BudgetsPage() {
     const fetchCategories = async () => {
         if (!token) return;
         try {
-            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+            const response = await fetchWithAuth(`${"/api"}/category/list`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -213,7 +213,7 @@ export default function BudgetsPage() {
             formData.append('alert_threshold', alertThreshold.toString());
 
             const endpoint = editingBudget ? '/budget/update' : '/budget/add';
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+            const response = await fetch(`${"/api"}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData
@@ -249,7 +249,7 @@ export default function BudgetsPage() {
             const formData = new FormData();
             formData.append('id', deleteConfirm.id.toString());
 
-            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/delete`, {
+            const response = await fetchWithAuth(`${"/api"}/budget/delete`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData

@@ -48,7 +48,7 @@ export default function LoginPage() {
         }
 
         // Check if API URL is configured
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = "/api";
         if (!apiUrl) {
             setError("API configuration error. Please contact support.");
             return;

@@ -270,7 +270,7 @@ export default function Dashboard() {
         async function fetchData() {
             try {
                 // 1. Current month summary (includes normalized recurring)
-                const summaryRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/summary/current-month`, {
+                const summaryRes = await fetchWithAuth(`${"/api"}/summary/current-month`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!summaryRes.ok) throw new Error('Failed to fetch summary');
@@ -282,7 +282,7 @@ export default function Dashboard() {
                 });
 
                 // 2. Fetch monthly history for historical modal
-                const historyRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/summary/monthly`, {
+                const historyRes = await fetchWithAuth(`${"/api"}/summary/monthly`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (historyRes.ok) {
@@ -291,7 +291,7 @@ export default function Dashboard() {
                     const last6Months = (historyData || []).slice(0, 6);
 
                     // Fetch recurring list to calculate monthly recurring for each month
-                    const recurringRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/recurring/list`, {
+                    const recurringRes = await fetchWithAuth(`${"/api"}/recurring/list`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     const recurringList: any[] = recurringRes.ok ? await recurringRes.json() : [];
@@ -320,7 +320,7 @@ export default function Dashboard() {
 
                 // 3. Spending breakdown by category for current month
                 const spendingRes = await fetchWithAuth(
-                    `${process.env.NEXT_PUBLIC_API_URL}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
+                    `${"/api"}/summary/category/monthly?year=${selectedMonth.slice(0, 4)}&month=${parseInt(selectedMonth.slice(5, 7))}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 if (!spendingRes.ok) throw new Error('Failed to fetch spending breakdown');
@@ -341,7 +341,7 @@ export default function Dashboard() {
                     limit: '1000', // High limit to get all transactions
                 });
 
-                const txRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
+                const txRes = await fetchWithAuth(`${"/api"}/transactions/search?${params.toString()}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!txRes.ok) throw new Error('Failed to fetch transactions');
@@ -370,7 +370,7 @@ export default function Dashboard() {
                 setHasMore(false);
 
                 // 5. Fetch budgets
-                const budgetsRes = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/budget/list`, {
+                const budgetsRes = await fetchWithAuth(`${"/api"}/budget/list`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (budgetsRes.ok) {
@@ -542,7 +542,7 @@ export default function Dashboard() {
 
         async function fetchCategories() {
             try {
-                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const res = await fetchWithAuth(`${"/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -574,7 +574,7 @@ export default function Dashboard() {
         });
 
         try {
-            const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transactions/search?${params.toString()}`, {
+            const res = await fetchWithAuth(`${"/api"}/transactions/search?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -681,7 +681,7 @@ export default function Dashboard() {
             const formData = new FormData();
             formData.append('id', String(transactionId));
 
-            const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
+            const response = await fetchWithAuth(`${"/api"}/transaction/delete`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

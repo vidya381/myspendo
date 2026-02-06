@@ -48,7 +48,7 @@ export default function EditTransactionPage() {
         async function fetchData() {
             try {
                 // Fetch categories
-                const categoriesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const categoriesRes = await fetch(`${"/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const categoriesData = await categoriesRes.json();
@@ -57,7 +57,7 @@ export default function EditTransactionPage() {
                 }
 
                 // Fetch transaction details
-                const transactionRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transaction/list`, {
+                const transactionRes = await fetch(`${"/api"}/transaction/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const transactionsData = await transactionRes.json();

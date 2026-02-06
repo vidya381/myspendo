@@ -33,7 +33,7 @@ export default function AddTransactionPage() {
 
         async function fetchCategories() {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const res = await fetch(`${"/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();

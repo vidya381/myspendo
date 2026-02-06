@@ -101,7 +101,7 @@ export default function TransactionsPage() {
 
         const fetchCategories = async () => {
             try {
-                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/category/list`, {
+                const res = await fetchWithAuth(`${"/api"}/category/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const data = await res.json();
@@ -125,7 +125,7 @@ export default function TransactionsPage() {
             setError(null);
 
             try {
-                const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/list`, {
+                const res = await fetchWithAuth(`${"/api"}/transaction/list`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -253,7 +253,7 @@ export default function TransactionsPage() {
             const formData = new FormData();
             formData.append('id', id.toString());
 
-            const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/transaction/delete`, {
+            const res = await fetchWithAuth(`${"/api"}/transaction/delete`, {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,
