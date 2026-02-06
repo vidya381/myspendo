@@ -1152,12 +1152,12 @@ export default function Dashboard() {
                         </div>
                     </div>
                     {spendingData.length === 0 ? (
-                        <div className="h-[300px] flex items-center justify-center text-gray-500">
+                        <div className="py-8 flex items-center justify-center text-gray-500">
                             <div className="text-center">
-                                <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z" />
                                 </svg>
-                                <p>No spending data available for this month</p>
+                                <p className="text-sm">No spending data available for this month</p>
                             </div>
                         </div>
                     ) : (
@@ -1229,7 +1229,7 @@ export default function Dashboard() {
                 {/* 3. Budget Overview - Status-Based with Time-Aware Info */}
                 {(() => {
                     // Show skeleton while budgets are loading
-                    if (loading || budgets.length === 0) {
+                    if (loading) {
                         return (
                             <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
                                 <div className="h-6 bg-gray-200 rounded w-40 mb-6 animate-pulse"></div>
@@ -1249,6 +1249,31 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                            </section>
+                        );
+                    }
+
+                    // Show empty state when no budgets exist
+                    if (budgets.length === 0) {
+                        return (
+                            <section className="bg-white/80 backdrop-blur-sm shadow-xl rounded-2xl p-6 border border-white/20">
+                                <h2 className="text-xl font-bold text-gray-900 mb-4">Budget Overview</h2>
+                                <div className="py-8 flex items-center justify-center text-gray-500">
+                                    <div className="text-center">
+                                        <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        <p className="text-sm">No budgets set up yet</p>
+                                        {token && (
+                                            <button
+                                                onClick={() => router.push('/budgets')}
+                                                className="mt-3 px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg font-medium hover:bg-emerald-700 transition-all duration-200"
+                                            >
+                                                Create Budget
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </section>
                         );
@@ -1530,12 +1555,12 @@ export default function Dashboard() {
                     </div>
 
                     {transactions.length === 0 ? (
-                        <div className="text-center py-12">
-                            <svg className="w-20 h-20 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="text-center py-8">
+                            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <p className="text-gray-500 font-medium">No transactions found</p>
-                            <p className="text-sm text-gray-400 mt-1">Try adjusting your filters or add a new transaction</p>
+                            <p className="text-sm text-gray-500">No transactions found</p>
+                            <p className="text-xs text-gray-400 mt-1">Try adjusting your filters or add a new transaction</p>
                         </div>
                     ) : (
                         <div>
