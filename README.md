@@ -110,7 +110,7 @@ npm install
 
 # Configure environment
 cp .env.example .env.local
-# Edit .env.local with your backend URL
+# Leave NEXT_PUBLIC_API_URL empty to use proxy (recommended)
 
 # Start dev server
 npm run dev
@@ -142,7 +142,8 @@ CORS_ORIGIN=http://localhost:3000
 
 **Frontend (.env.local)**
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:8080
+# Leave empty to use Next.js rewrites proxy (prevents CORS issues)
+NEXT_PUBLIC_API_URL=
 ```
 
 ## Deployment
